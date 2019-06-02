@@ -1,4 +1,4 @@
-package com.lab601.loopicandroid;
+package com.lab601.loopicandroid.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

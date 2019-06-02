@@ -1,4 +1,4 @@
-package com.lab601.loopicandroid;
+package com.lab601.loopicandroid.activity;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+
+import com.lab601.loopicandroid.listener.PermissionListener;
 
 import java.util.ArrayList;
 import java.util.List;

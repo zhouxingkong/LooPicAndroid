@@ -1,10 +1,13 @@
-package com.lab601.loopicandroid;
+package com.lab601.loopicandroid.activity;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+
+import com.lab601.loopicandroid.R;
+import com.lab601.loopicandroid.listener.PermissionListener;
 
 import java.util.List;
 
