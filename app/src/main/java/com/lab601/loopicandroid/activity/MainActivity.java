@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -51,18 +49,18 @@ public class MainActivity extends BaseActivity {
 
     List<OutputDesc> outputDescs;
 
-    @SuppressLint("HandlerLeak")
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {  //这个是发送过来的消息
-            switch (msg.what) {
-                case WHAT_PLAY_VIDEO: {
-                    playSound((String) msg.obj);
-                    break;
-                }
-            }
-        }
-    };
+//    @SuppressLint("HandlerLeak")
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {  //这个是发送过来的消息
+//            switch (msg.what) {
+//                case WHAT_PLAY_VIDEO: {
+//                    playSound((String) msg.obj);
+//                    break;
+//                }
+//            }
+//        }
+//    };
 
     /**
      * @param index
@@ -87,7 +85,20 @@ public class MainActivity extends BaseActivity {
                 Utils.shuffle(files);
             }
             if (files.size() > 0) {
-                playSound(files.get(0).getPath());
+                switch (soundMode) {
+                    case "1": {
+                        playSound(files, 0, 1);
+                        break;
+                    }
+                    case "2": {
+                        playSound(files, 0, files.size() + 10);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+
 //                handler.sendMessage(handler.obtainMessage(WHAT_PLAY_VIDEO,files.get(0).getPath()));    //发送初始化信息
             }
         } else {
@@ -169,8 +180,8 @@ public class MainActivity extends BaseActivity {
      *
      * @param path
      */
-    public void playSound(String path) {
-        Log.d("xingkong", "playSound: 路径:" + path);
+    public void playSound(List<File> path, int index, int totalNum) {
+//        Log.d("xingkong", "playSound: 路径:" + path);
         try {
 //            File file = new File(path);
 //            FileInputStream fis = new FileInputStream(file);
@@ -178,7 +189,14 @@ public class MainActivity extends BaseActivity {
 //            mediaPlayer.setDataSource(fis.getFD());
             mediaPlayer.stop();
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(path);
+            mediaPlayer.setDataSource(path.get(index).getPath());
+            if (totalNum > index + 1) {
+                mediaPlayer.setOnCompletionListener((mp -> {
+                    Log.d("xingkong", "playSound: 音频播放完毕");
+                    playSound(path, (index + 1) % path.size(), totalNum);
+                }));
+            }
+
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (IOException e) {
@@ -186,9 +204,7 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
         }
 //        /*播放完成回调函数*/
-//        mediaPlayer.setOnCompletionListener((mp -> {
-//
-//        }));
+
 
     }
 
