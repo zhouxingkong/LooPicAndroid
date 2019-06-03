@@ -16,23 +16,21 @@ import android.widget.TextView;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.lab601.loopicandroid.R;
-import com.lab601.loopicandroid.bean.DisplayMenu;
+import com.lab601.loopicandroid.module.DisplayMenu;
+import com.lab601.loopicandroid.module.SourceManager;
 import com.lab601.loopicandroid.view.LooViewPager;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import static com.lab601.loopicandroid.module.SourceManager.PICTURE_PATH;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String ROOT_PATH = "/sdcard/bb/output"; //资源的总路径
-    public static final String PICTURE_PATH = ROOT_PATH + "/imgs";
-    public static final String SOUND_ROOT = "/sdcard/bb/sounds";
+
 
 //    public static final int WHAT_PLAY_VIDEO = 10;
 
@@ -44,7 +42,7 @@ public class MainActivity extends BaseActivity {
 
     MediaPlayer mediaPlayer;
 
-    List<DisplayMenu> displayMenus;
+
 
 
     /**
@@ -53,7 +51,7 @@ public class MainActivity extends BaseActivity {
     public void onPageChanged(int index) {
         Log.d("xingkong", "浏览索引:" + index);
 
-        DisplayMenu displayMenu = displayMenus.get(index);
+        DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
         List<File> soundFiles = displayMenu.getSoundList();
         if (soundFiles != null && soundFiles.size() > 0) {
             playSound(soundFiles, 0);
@@ -63,7 +61,7 @@ public class MainActivity extends BaseActivity {
 
 //        handler.sendMessage(handler.obtainMessage(WHAT_PLAY_VIDEO,files.get(0).getPath()));    //发送初始化信息
         /*显示文本*/
-        String text = displayMenus.get(index).getText();
+        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
         if (text.equals("#")) {
             text = "";
         }
@@ -73,32 +71,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    /**
-     * 读取输入文件
-     *
-     * @param path
-     */
-    public void readConfigFile(String path) {
-        try {
-            FileReader fr = new FileReader(path);
-            BufferedReader bf = new BufferedReader(fr);
-            String str;
 
-            displayMenus = new ArrayList<>();
-
-            /*第一行:读取源文件路径*/
-            while ((str = bf.readLine()) != null) {
-                DisplayMenu oneDesc = new DisplayMenu();
-                oneDesc.fromString(str);
-                displayMenus.add(oneDesc);
-            }
-
-            bf.close();
-            fr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -107,7 +80,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         /*读取输入配置文件*/
-        readConfigFile(ROOT_PATH + "/index.txt");
+//        readConfigFile(ROOT_PATH + "/index.txt");
 
         mediaPlayer = new MediaPlayer();    //音频播放器
 //        mediaPlayer = MediaPlayer.create(this,R.raw.sound);
@@ -171,7 +144,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return displayMenus.size();
+            return SourceManager.getInstance().getDisplayMenus().size();
         }
 
 
@@ -180,7 +153,7 @@ public class MainActivity extends BaseActivity {
 
             PhotoView photoView = new PhotoView(container.getContext());
 
-            DisplayMenu displayMenu = displayMenus.get(position);
+            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(position);
             String fileName = displayMenu.getPicFileName();
             if (fileName.equals("#") || fileName.length() < 1) {   //没有文件，表演黑屏
                 ColorDrawable colorDrawable = new ColorDrawable(

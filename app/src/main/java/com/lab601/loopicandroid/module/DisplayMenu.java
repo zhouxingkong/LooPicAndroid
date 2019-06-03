@@ -1,4 +1,4 @@
-package com.lab601.loopicandroid.bean;
+package com.lab601.loopicandroid.module;
 
 
 import java.io.File;
