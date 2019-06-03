@@ -3,21 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context=".activity.MainActivity">
 
 
-    <com.lab601.loopicandroid.view.LooViewPager
-        android:id="@+id/photo_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.0" />
-
     <TextView
         android:id="@+id/loo_text"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="0.3"
+        android:background="@color/black"
         android:text="" />
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="match_parent" />
+
+    <com.lab601.loopicandroid.view.LooViewPager
+        android:id="@+id/photo_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0" />
+
 
 </LinearLayout>

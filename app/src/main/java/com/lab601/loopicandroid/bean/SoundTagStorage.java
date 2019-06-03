@@ -36,7 +36,7 @@ public class SoundTagStorage {
         List<File> soundFiles = getSoundFile(tag);
         int fileNum = soundFiles.size();
         if (fileNum < 1) return null;
-        int rand = ((int) (new Random().nextFloat() * (fileNum - 1)));
+        int rand = ((int) (new Random().nextFloat() * fileNum));
 
         return soundFiles.get(rand);
 

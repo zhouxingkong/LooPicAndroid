@@ -51,6 +51,13 @@ public class BaseActivity extends AppCompatActivity {
         activity = this;
     }
 
+//    @Override
+//    public void onResume() {
+//
+//        super.onResume();
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//    }
+
     /**
      * 申请后的处理
      */

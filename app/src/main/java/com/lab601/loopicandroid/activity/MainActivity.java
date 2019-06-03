@@ -61,30 +61,6 @@ public class MainActivity extends BaseActivity {
             mediaPlayer.stop();
         }
 
-//        /*播放音频*/
-//        String soundTag = displayMenus.get(index).getSoundTag();
-//        String soundMode = displayMenus.get(index).getSoundMode();
-//        //todo: 添加更高级的标签匹配机制
-//        if (!soundTag.equals("#") && soundTag.length() > 0) {
-//            soundTag = soundTag.replace("-", "/");
-//            List<List<File>> allFileList = new ArrayList<>();
-//
-//            String[] split = soundTag.split("&");
-//            for(String s:split){
-//                File soundDir = new File(SOUND_ROOT + "/" + soundTag);
-////            Log.d(TAG, "onPageChanged: 音频路径:"+SOUND_ROOT+"/"+soundTag);
-//                final File[] soundFiles = soundDir.listFiles();
-//                List<File> files = new ArrayList<File>(Arrays.asList(soundFiles));
-//                if (files.size() > 1) {
-//                    Utils.shuffle(files);
-//                }
-//
-//                allFileList.add(files);
-//            }
-
-
-
-
 //        handler.sendMessage(handler.obtainMessage(WHAT_PLAY_VIDEO,files.get(0).getPath()));    //发送初始化信息
         /*显示文本*/
         String text = displayMenus.get(index).getText();
@@ -152,6 +128,12 @@ public class MainActivity extends BaseActivity {
         });
         fullScreen();
     }
+//    @Override
+//    public void onResume() {
+//
+//        super.onResume();
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//    }
 
 
     /**
