@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -87,6 +88,11 @@ public class MainActivity extends BaseActivity {
 
         /*初始化view*/
         textView = (TextView) findViewById(R.id.loo_text);
+
+//        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/loo_font1.ttf");  // mContext为上下文
+        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
+        textView.setTypeface(typeface);
+
         textView.setOnClickListener((view) -> {
             int curr = photoView.getCurrentItem();
             photoView.setCurrentItem(curr + 1, true);
