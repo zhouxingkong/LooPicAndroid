@@ -1,6 +1,8 @@
 package com.lab601.loopicandroid.module;
 
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +92,13 @@ public class DisplayMenu {
         }
         /*生成音频列表*/
         if (!soundMode.equals("#") && soundMode.length() > 0 && !soundTag.equals("#") && soundTag.length() > 0) {
-            int soundLoop = Integer.parseInt(soundMode);
+            int soundLoop = 0;
+            try {
+                soundLoop = Integer.parseInt(soundMode);
+            } catch (Exception e) {
+                Log.e("xingkong", "fromString:解析音频个数出错", e);
+            }
+
             String[] split = soundTag.split("&");
             for (String s : split) {
                 soundTagList.add(s);
@@ -100,7 +108,10 @@ public class DisplayMenu {
                 for (String tag : soundTagList) {
 
                     File soundFile = SoundTagStorage.getNextSoundFile(tag);
-                    soundList.add(soundFile);
+                    if (soundFile != null) {    //是null就不放进去
+                        soundList.add(soundFile);
+                    }
+
 
                 }
             }

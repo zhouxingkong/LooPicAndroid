@@ -122,6 +122,9 @@ public class MainActivity extends BaseActivity {
      */
     public void playSound(List<File> path, int index) {
 //        Log.d("xingkong", "playSound: 路径:" + path);
+        if (path == null || path.size() < 1 || path.size() < index + 1) {
+            return;
+        }
         try {
             mediaPlayer.stop();
             mediaPlayer = new MediaPlayer();
