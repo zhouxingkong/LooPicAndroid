@@ -16,8 +16,7 @@ import android.widget.TextView;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.lab601.loopicandroid.R;
-import com.lab601.loopicandroid.Utils;
-import com.lab601.loopicandroid.bean.OutputDesc;
+import com.lab601.loopicandroid.bean.DisplayMenu;
 import com.lab601.loopicandroid.view.LooViewPager;
 
 import java.io.BufferedReader;
@@ -27,40 +26,26 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String ROOT_PATH = "/sdcard/bb/output";
+    public static final String ROOT_PATH = "/sdcard/bb/output"; //资源的总路径
     public static final String PICTURE_PATH = ROOT_PATH + "/imgs";
     public static final String SOUND_ROOT = "/sdcard/bb/sounds";
 
-    public static final int WHAT_PLAY_VIDEO = 10;
+//    public static final int WHAT_PLAY_VIDEO = 10;
 
 
     LooViewPager photoView;
     TextView textView;
 
-    int totalPages = 0; //总共图片数
     int currPage = 100;
 
     MediaPlayer mediaPlayer;
 
-    List<OutputDesc> outputDescs;
+    List<DisplayMenu> displayMenus;
 
-//    @SuppressLint("HandlerLeak")
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {  //这个是发送过来的消息
-//            switch (msg.what) {
-//                case WHAT_PLAY_VIDEO: {
-//                    playSound((String) msg.obj);
-//                    break;
-//                }
-//            }
-//        }
-//    };
 
     /**
      * @param index
@@ -68,47 +53,41 @@ public class MainActivity extends BaseActivity {
     public void onPageChanged(int index) {
         Log.d("xingkong", "浏览索引:" + index);
 
-
-
-
-        /*播放音频*/
-        String soundTag = outputDescs.get(index).getSoundTag();
-        String soundMode = outputDescs.get(index).getSoundMode();
-        //todo: 添加更高级的标签匹配机制
-        if (!soundTag.equals("#") && soundTag.length() > 0) {
-            soundTag = soundTag.replace("-", "/");
-            File soundDir = new File(SOUND_ROOT + "/" + soundTag);
-//            Log.d(TAG, "onPageChanged: 音频路径:"+SOUND_ROOT+"/"+soundTag);
-            final File[] soundFiles = soundDir.listFiles();
-            List<File> files = new ArrayList<File>(Arrays.asList(soundFiles));
-            if (files.size() > 1) {
-                Utils.shuffle(files);
-            }
-            if (files.size() > 0) {
-                switch (soundMode) {
-                    case "1": {
-                        playSound(files, 0, 1);
-                        break;
-                    }
-                    case "2": {
-                        playSound(files, 0, files.size() + 10);
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-
-//                handler.sendMessage(handler.obtainMessage(WHAT_PLAY_VIDEO,files.get(0).getPath()));    //发送初始化信息
-            }
+        DisplayMenu displayMenu = displayMenus.get(index);
+        List<File> soundFiles = displayMenu.getSoundList();
+        if (soundFiles != null && soundFiles.size() > 0) {
+            playSound(soundFiles, 0);
         } else {
             mediaPlayer.stop();
         }
 
+//        /*播放音频*/
+//        String soundTag = displayMenus.get(index).getSoundTag();
+//        String soundMode = displayMenus.get(index).getSoundMode();
+//        //todo: 添加更高级的标签匹配机制
+//        if (!soundTag.equals("#") && soundTag.length() > 0) {
+//            soundTag = soundTag.replace("-", "/");
+//            List<List<File>> allFileList = new ArrayList<>();
+//
+//            String[] split = soundTag.split("&");
+//            for(String s:split){
+//                File soundDir = new File(SOUND_ROOT + "/" + soundTag);
+////            Log.d(TAG, "onPageChanged: 音频路径:"+SOUND_ROOT+"/"+soundTag);
+//                final File[] soundFiles = soundDir.listFiles();
+//                List<File> files = new ArrayList<File>(Arrays.asList(soundFiles));
+//                if (files.size() > 1) {
+//                    Utils.shuffle(files);
+//                }
+//
+//                allFileList.add(files);
+//            }
+
+
+
 
 //        handler.sendMessage(handler.obtainMessage(WHAT_PLAY_VIDEO,files.get(0).getPath()));    //发送初始化信息
         /*显示文本*/
-        String text = outputDescs.get(index).getText();
+        String text = displayMenus.get(index).getText();
         if (text.equals("#")) {
             text = "";
         }
@@ -129,13 +108,13 @@ public class MainActivity extends BaseActivity {
             BufferedReader bf = new BufferedReader(fr);
             String str;
 
-            outputDescs = new ArrayList<>();
+            displayMenus = new ArrayList<>();
 
             /*第一行:读取源文件路径*/
             while ((str = bf.readLine()) != null) {
-                OutputDesc oneDesc = new OutputDesc();
+                DisplayMenu oneDesc = new DisplayMenu();
                 oneDesc.fromString(str);
-                outputDescs.add(oneDesc);
+                displayMenus.add(oneDesc);
             }
 
             bf.close();
@@ -180,20 +159,16 @@ public class MainActivity extends BaseActivity {
      *
      * @param path
      */
-    public void playSound(List<File> path, int index, int totalNum) {
+    public void playSound(List<File> path, int index) {
 //        Log.d("xingkong", "playSound: 路径:" + path);
         try {
-//            File file = new File(path);
-//            FileInputStream fis = new FileInputStream(file);
-//            mediaPlayer.reset();
-//            mediaPlayer.setDataSource(fis.getFD());
             mediaPlayer.stop();
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(path.get(index).getPath());
-            if (totalNum > index + 1) {
+            if (path.size() > index + 1) {
                 mediaPlayer.setOnCompletionListener((mp -> {
                     Log.d("xingkong", "playSound: 音频播放完毕");
-                    playSound(path, (index + 1) % path.size(), totalNum);
+                    playSound(path, index + 1);
                 }));
             }
 
@@ -214,7 +189,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return outputDescs.size();
+            return displayMenus.size();
         }
 
 
@@ -223,8 +198,8 @@ public class MainActivity extends BaseActivity {
 
             PhotoView photoView = new PhotoView(container.getContext());
 
-            OutputDesc outputDesc = outputDescs.get(position);
-            String fileName = outputDesc.getPicFileName();
+            DisplayMenu displayMenu = displayMenus.get(position);
+            String fileName = displayMenu.getPicFileName();
             if (fileName.equals("#") || fileName.length() < 1) {   //没有文件，表演黑屏
                 ColorDrawable colorDrawable = new ColorDrawable(
                         getResources().getColor(R.color.black));
