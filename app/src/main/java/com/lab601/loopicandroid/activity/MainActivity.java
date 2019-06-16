@@ -1,6 +1,7 @@
 package com.lab601.loopicandroid.activity;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.lab601.loopicandroid.R;
+import com.lab601.loopicandroid.module.ConfigManager;
 import com.lab601.loopicandroid.module.DisplayMenu;
 import com.lab601.loopicandroid.module.SourceManager;
 import com.lab601.loopicandroid.view.LooViewPager;
@@ -31,11 +34,6 @@ import static com.lab601.loopicandroid.module.SourceManager.PICTURE_PATH;
 
 public class MainActivity extends BaseActivity {
 
-
-
-//    public static final int WHAT_PLAY_VIDEO = 10;
-
-
     LooViewPager photoView;
     TextView textView;
 
@@ -43,30 +41,31 @@ public class MainActivity extends BaseActivity {
 
     MediaPlayer mediaPlayer;
 
-
-
-
     /**
      * @param index
      */
     public void onPageChanged(int index) {
         Log.d("xingkong", "浏览索引:" + index);
 
-        DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
-        List<File> soundFiles = displayMenu.getSoundList();
-        if (soundFiles != null && soundFiles.size() > 0) {
-            playSound(soundFiles, 0);
-        } else {
-            mediaPlayer.stop();
+
+        if (ConfigManager.getInstance().isSound()) {
+            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
+            List<File> soundFiles = displayMenu.getSoundList();
+            if (soundFiles != null && soundFiles.size() > 0) {
+                playSound(soundFiles, 0);
+            } else {
+                mediaPlayer.stop();
+            }
         }
 
-//        handler.sendMessage(handler.obtainMessage(WHAT_PLAY_VIDEO,files.get(0).getPath()));    //发送初始化信息
         /*显示文本*/
         String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
+        text = text.replace("{", "<font color='#ff0000'>");
+        text = text.replace("}", "</font>");
         if (text.equals("#")) {
             text = "";
         }
-        textView.setText(text);
+        textView.setText(Html.fromHtml(text, 0));
 
 
     }
@@ -78,17 +77,24 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        /*读取输入配置文件*/
-//        readConfigFile(ROOT_PATH + "/index.txt");
+        boolean landscape = ConfigManager.getInstance().isLandscape();
+        if (landscape) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setContentView(R.layout.activity_main_landscape);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            setContentView(R.layout.activity_main_vertical);
+        }
+
+
 
         mediaPlayer = new MediaPlayer();    //音频播放器
-//        mediaPlayer = MediaPlayer.create(this,R.raw.sound);
 
         /*初始化view*/
         textView = (TextView) findViewById(R.id.loo_text);
 
+        /*设置文本字体*/
 //        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/loo_font1.ttf");  // mContext为上下文
         Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
         textView.setTypeface(typeface);
@@ -100,25 +106,13 @@ public class MainActivity extends BaseActivity {
         photoView = (LooViewPager) findViewById(R.id.photo_view);
         photoView.setBackgroundColor(Color.BLACK);
         photoView.setAdapter(new LooPagerAdapter());
-        photoView.setOnClickListener((view) -> {
-            Log.d("xinkong", "view点击");
-//            int curr = photoView.getCurrentItem();
-//            photoView.setCurrentItem(curr + 1, true);
-        });
         fullScreen();
     }
-//    @Override
-//    public void onResume() {
-//
-//        super.onResume();
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//    }
-
 
     /**
-     * 播放指定路径的音频
-     *
+     * 播放音频
      * @param path
+     * @param index 播放到第几个了
      */
     public void playSound(List<File> path, int index) {
 //        Log.d("xingkong", "playSound: 路径:" + path);
@@ -130,6 +124,7 @@ public class MainActivity extends BaseActivity {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(path.get(index).getPath());
             if (path.size() > index + 1) {
+                /*播放完成回调函数*/
                 mediaPlayer.setOnCompletionListener((mp -> {
                     Log.d("xingkong", "playSound: 音频播放完毕");
                     playSound(path, index + 1);
@@ -142,13 +137,13 @@ public class MainActivity extends BaseActivity {
             Log.e("xingkong", "playSound: 播放音频异常", e);
             e.printStackTrace();
         }
-//        /*播放完成回调函数*/
-
 
     }
 
 
-
+    /**
+     * 图片翻页插件适配器
+     */
     class LooPagerAdapter extends PagerAdapter {
 
         @Override

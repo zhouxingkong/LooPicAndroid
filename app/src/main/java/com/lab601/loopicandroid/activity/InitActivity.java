@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.listener.PermissionListener;
+import com.lab601.loopicandroid.module.ConfigManager;
 import com.lab601.loopicandroid.module.InitialCallback;
 import com.lab601.loopicandroid.module.SourceManager;
 
@@ -30,6 +31,9 @@ public class InitActivity extends BaseActivity {
             "android.permission.ACCESS_FINE_LOCATION"};
     Button startButton;
     TextView statTextView;
+
+    Button landscapeButton;
+    Button soundButton;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -61,6 +65,29 @@ public class InitActivity extends BaseActivity {
             Intent intent = new Intent();
             intent.setClass(InitActivity.this, MainActivity.class);
             startActivity(intent);
+        });
+
+        soundButton = (Button) findViewById(R.id.sound_on);
+        landscapeButton = (Button) findViewById(R.id.landscape_on);
+
+        soundButton.setOnClickListener(v -> {   //静音按钮
+            if (ConfigManager.getInstance().isSound()) {
+                soundButton.setText("声音:关闭");
+                ConfigManager.getInstance().setSound(false);
+            } else {
+                soundButton.setText("声音:开启");
+                ConfigManager.getInstance().setSound(true);
+            }
+        });
+
+        landscapeButton.setOnClickListener(v -> {   //设置横竖屏
+            if (ConfigManager.getInstance().isLandscape()) {
+                landscapeButton.setText("竖屏显示");
+                ConfigManager.getInstance().setLandscape(false);
+            } else {
+                landscapeButton.setText("横屏显示");
+                ConfigManager.getInstance().setLandscape(true);
+            }
         });
 
         /*设置回调*/

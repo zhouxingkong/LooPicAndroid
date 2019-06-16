@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * 资源管理类
+ */
 public class SourceManager {
 
     public static final String ROOT_PATH = "/sdcard/bb/output"; //资源的总路径
@@ -33,7 +37,7 @@ public class SourceManager {
      * @param path
      */
     public void readConfigFile(String path) {
-        if (inited) {
+        if (inited) {   //只允许初始化一次,避免出现并发问题
             return;
         }
         inited = true;

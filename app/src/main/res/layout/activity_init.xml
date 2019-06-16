@@ -10,6 +10,24 @@
         android:layout_height="wrap_content"
         android:text="正在初始化" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/sound_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="声音:关闭" />
+
+        <Button
+            android:id="@+id/landscape_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="横屏显示" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/start_loo"
         android:layout_width="match_parent"

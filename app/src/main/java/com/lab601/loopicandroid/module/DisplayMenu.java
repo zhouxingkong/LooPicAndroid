@@ -84,12 +84,18 @@ public class DisplayMenu {
      */
     public void fromString(String str) {
         String[] nameSplitSpace = str.split("\\ ");    //空格分开不同的部分
-        picFileName = nameSplitSpace[0];
 
-        if (nameSplitSpace.length > 2) {
-            soundTag = nameSplitSpace[1];
-            soundMode = nameSplitSpace[2];
+        if (nameSplitSpace.length != 4) {   //参数个数不对直接返回空
+            return;
         }
+
+        picFileName = nameSplitSpace[0];
+        soundTag = nameSplitSpace[1];
+        soundMode = nameSplitSpace[2];
+        text = nameSplitSpace[3];
+
+        //todo: 输入的异常情况处理
+
         /*生成音频列表*/
         if (!soundMode.equals("#") && soundMode.length() > 0 && !soundTag.equals("#") && soundTag.length() > 0) {
             int soundLoop = 0;
@@ -104,6 +110,7 @@ public class DisplayMenu {
                 soundTagList.add(s);
             }
 
+            /**/
             for (int i = 0; i < soundLoop; i++) {
                 for (String tag : soundTagList) {
 
@@ -112,16 +119,10 @@ public class DisplayMenu {
                         soundList.add(soundFile);
                     }
 
-
                 }
             }
         }
 
-
-
-        if (nameSplitSpace.length > 3) {
-            text = nameSplitSpace[3];
-        }
     }
 
 
