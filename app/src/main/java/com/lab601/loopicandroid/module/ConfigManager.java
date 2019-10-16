@@ -6,6 +6,9 @@ public class ConfigManager {
     private boolean landscape = true;   //横屏
     private boolean sound = false;  //静音
 
+
+    private int startIndex = 0;
+
     private ConfigManager() {
 
     }
@@ -31,5 +34,14 @@ public class ConfigManager {
 
     public void setSound(boolean sound) {
         this.sound = sound;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public ConfigManager setStartIndex(int startIndex) {
+        this.startIndex = startIndex;
+        return this;
     }
 }

@@ -33,6 +33,7 @@ import java.util.List;
 import static com.lab601.loopicandroid.module.SourceManager.PICTURE_PATH;
 
 public class MainActivity extends BaseActivity {
+    public double MAX_SIZE = 2000000.0;
 
     LooViewPager photoView;
     TextView textView;
@@ -40,6 +41,7 @@ public class MainActivity extends BaseActivity {
     int currPage = 100;
 
     MediaPlayer mediaPlayer;
+
 
     /**
      * @param index
@@ -106,6 +108,11 @@ public class MainActivity extends BaseActivity {
         photoView = (LooViewPager) findViewById(R.id.photo_view);
         photoView.setBackgroundColor(Color.BLACK);
         photoView.setAdapter(new LooPagerAdapter());
+        int startIndex = ConfigManager.getInstance().getStartIndex();
+        if (startIndex > 0) {
+            photoView.setCurrentItem(startIndex, false);
+        }
+
         fullScreen();
     }
 
@@ -173,6 +180,19 @@ public class MainActivity extends BaseActivity {
                 }
 
                 Bitmap bitmap = BitmapFactory.decodeStream(fis);
+
+                //解决过大的bitmap
+                int w = bitmap.getWidth();//get width
+                int h = bitmap.getHeight();//get height
+                long size = w * h * 4;
+                if (size > 8000000) {
+                    double ratio = Math.sqrt(((double) size) / 8000000.0);
+                    System.out.println(ratio);
+                    w = (int) ((double) w / ratio);
+                    h = (int) ((double) h / ratio);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
+                }
+
                 photoView.setImageBitmap(bitmap);
             }
 

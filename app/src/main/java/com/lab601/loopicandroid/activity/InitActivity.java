@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lab601.loopicandroid.R;
@@ -34,6 +35,7 @@ public class InitActivity extends BaseActivity {
 
     Button landscapeButton;
     Button soundButton;
+    EditText initPosEdit;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -62,10 +64,22 @@ public class InitActivity extends BaseActivity {
         statTextView = (TextView) findViewById(R.id.init_stat);
         startButton = (Button) findViewById(R.id.start_loo);
         startButton.setOnClickListener((view) -> {
+            int startPos = 0;
+            try {
+                String startPosStr = initPosEdit.getText().toString();
+                startPos = Integer.parseInt(startPosStr);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            ConfigManager.getInstance().setStartIndex(startPos);
+
             Intent intent = new Intent();
             intent.setClass(InitActivity.this, MainActivity.class);
             startActivity(intent);
         });
+
+        initPosEdit = (EditText) findViewById(R.id.start_index);
+
 
         soundButton = (Button) findViewById(R.id.sound_on);
         landscapeButton = (Button) findViewById(R.id.landscape_on);
