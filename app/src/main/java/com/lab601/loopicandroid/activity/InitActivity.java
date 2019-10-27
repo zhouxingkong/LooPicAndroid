@@ -31,6 +31,7 @@ public class InitActivity extends BaseActivity {
             "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.ACCESS_FINE_LOCATION"};
     Button startButton;
+    Button startNetPicButton;
     TextView statTextView;
 
     Button landscapeButton;
@@ -75,6 +76,22 @@ public class InitActivity extends BaseActivity {
 
             Intent intent = new Intent();
             intent.setClass(InitActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+
+        startNetPicButton = (Button) findViewById(R.id.start_net_loo);
+        startNetPicButton.setOnClickListener((view) -> {
+            int startPos = 0;
+            try {
+                String startPosStr = initPosEdit.getText().toString();
+                startPos = Integer.parseInt(startPosStr);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            ConfigManager.getInstance().setStartIndex(startPos);
+
+            Intent intent = new Intent();
+            intent.setClass(InitActivity.this, NetPicActivity.class);
             startActivity(intent);
         });
 

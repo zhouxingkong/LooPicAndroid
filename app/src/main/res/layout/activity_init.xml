@@ -45,4 +45,10 @@
         android:layout_height="wrap_content"
         android:text="准备好面对疾风" />
 
+    <Button
+        android:id="@+id/start_net_loo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="网络疾风" />
+
 </LinearLayout>

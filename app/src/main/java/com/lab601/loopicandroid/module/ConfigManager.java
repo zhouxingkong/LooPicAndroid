@@ -5,7 +5,7 @@ public class ConfigManager {
     private static ConfigManager mInstance;
     private boolean landscape = true;   //横屏
     private boolean sound = false;  //静音
-
+    private String url = "107";
 
     private int startIndex = 0;
 
@@ -42,6 +42,15 @@ public class ConfigManager {
 
     public ConfigManager setStartIndex(int startIndex) {
         this.startIndex = startIndex;
+        return this;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public ConfigManager setUrl(String url) {
+        this.url = url;
         return this;
     }
 }

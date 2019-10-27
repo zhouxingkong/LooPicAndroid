@@ -42,7 +42,6 @@ public class MainActivity extends BaseActivity {
 
     MediaPlayer mediaPlayer;
 
-
     /**
      * @param index
      */
@@ -112,6 +111,7 @@ public class MainActivity extends BaseActivity {
         if (startIndex > 0) {
             photoView.setCurrentItem(startIndex, false);
         }
+
 
         fullScreen();
     }
@@ -185,8 +185,8 @@ public class MainActivity extends BaseActivity {
                 int w = bitmap.getWidth();//get width
                 int h = bitmap.getHeight();//get height
                 long size = w * h * 4;
-                if (size > 8000000) {
-                    double ratio = Math.sqrt(((double) size) / 8000000.0);
+                if (size > 16000000) {
+                    double ratio = Math.sqrt(((double) size) / 16000000.0);
                     System.out.println(ratio);
                     w = (int) ((double) w / ratio);
                     h = (int) ((double) h / ratio);
