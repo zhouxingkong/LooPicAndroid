@@ -2,12 +2,11 @@ package com.lab601.loopicandroid.activity;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -21,8 +20,6 @@ import com.lab601.loopicandroid.module.DisplayMenu;
 import com.lab601.loopicandroid.module.SourceManager;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -116,7 +113,6 @@ public class MainActivity extends BaseActivity {
         photoView.setBackgroundColor(Color.BLACK);
 
 
-
         fullScreen();
         showPage(currPage);
     }
@@ -160,29 +156,33 @@ public class MainActivity extends BaseActivity {
                     getResources().getColor(R.color.black));
             photoView.setImageDrawable(colorDrawable);
         } else {   //有文件，表演文件
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
-            } catch (FileNotFoundException e) {
-                Log.d("xingkong", "文件未找到");
-                e.printStackTrace();
-            }
 
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            Uri uri = Uri.parse("file://" + PICTURE_PATH + "/" + fileName);
+            photoView.setImageURI(uri);
 
-            //解决过大的bitmap
-            int w = bitmap.getWidth();//get width
-            int h = bitmap.getHeight();//get height
-            long size = w * h * 4;
-            if (size > 16000000) {
-                double ratio = Math.sqrt(((double) size) / 16000000.0);
-                System.out.println(ratio);
-                w = (int) ((double) w / ratio);
-                h = (int) ((double) h / ratio);
-                bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
-            }
+//            FileInputStream fis = null;
+//            try {
+//                fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
+//            } catch (FileNotFoundException e) {
+//                Log.d("xingkong", "文件未找到");
+//                e.printStackTrace();
+//            }
 
-            photoView.setImageBitmap(bitmap);
+//            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+//
+//            //解决过大的bitmap
+//            int w = bitmap.getWidth();//get width
+//            int h = bitmap.getHeight();//get height
+//            long size = w * h * 4;
+//            if (size > 16000000) {
+//                double ratio = Math.sqrt(((double) size) / 16000000.0);
+//                System.out.println(ratio);
+//                w = (int) ((double) w / ratio);
+//                h = (int) ((double) h / ratio);
+//                bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
+//            }
+//
+//            photoView.setImageBitmap(bitmap);
             onPageChanged(index);
         }
     }

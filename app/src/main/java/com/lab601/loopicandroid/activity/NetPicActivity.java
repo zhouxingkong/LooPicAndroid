@@ -3,14 +3,18 @@ package com.lab601.loopicandroid.activity;
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.module.ConfigManager;
-import com.lab601.loopicandroid.view.imageview.SmartImageView;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,7 +22,7 @@ import java.net.URL;
 public class NetPicActivity extends BaseActivity {
     public double MAX_SIZE = 2000000.0;
 
-    SmartImageView photoView;
+    SimpleDraweeView photoView;
     TextView textView;
     Button changeButton;
     Button preButton;
@@ -30,7 +34,8 @@ public class NetPicActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        currPage = 0;
+        int startIndex = ConfigManager.getInstance().getStartIndex();
+        currPage = startIndex;
         urlPre = "http:/192.168.1." + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
 
 
@@ -51,13 +56,13 @@ public class NetPicActivity extends BaseActivity {
         textView.setTypeface(typeface);
         textView.setOnClickListener((view) -> { //下一张图
             currPage++;
-            photoView.setImageUrl(urlPre + currPage);
+            showPage(currPage);
         });
         preButton = (Button) findViewById(R.id.pre_pic);
         preButton.setOnClickListener((view) -> {   //上一张图
             if (currPage > 0) {
                 currPage--;
-                photoView.setImageUrl(urlPre + currPage);
+                showPage(currPage);
             }
 
         });
@@ -81,11 +86,24 @@ public class NetPicActivity extends BaseActivity {
 
 
         });
-        photoView = (SmartImageView) findViewById(R.id.photo_view);
-        photoView.setBackground(new ColorDrawable(getResources().getColor(R.color.black)));
-        photoView.setImageUrl(urlPre + currPage);
+        photoView = (SimpleDraweeView) findViewById(R.id.photo_view);
+//        photoView.setImageUrl(urlPre + currPage);
 
         fullScreen();
+        showPage(currPage);
+    }
+
+    public void showPage(int index) {
+        Uri uri = Uri.parse(urlPre + index);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(photoView.getController())
+                .build();
+        photoView.setController(controller);
+//        photoView.setImageURI(uri);
     }
 
 }
