@@ -36,7 +36,6 @@ public class NetPicActivity extends BaseActivity {
     Button changeButton;
     Button preButton;
 
-
     int currPage = 100;
     MediaPlayer mediaPlayer;
 
@@ -46,7 +45,6 @@ public class NetPicActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         int startIndex = ConfigManager.getInstance().getStartIndex();
         currPage = startIndex;
-
 
         boolean landscape = ConfigManager.getInstance().isLandscape();
         if (landscape) {
@@ -78,7 +76,6 @@ public class NetPicActivity extends BaseActivity {
 
         changeButton = (Button) findViewById(R.id.change_pic);
         changeButton.setOnClickListener((view) -> {
-
             Thread netThread = new Thread() {
                 @Override
                 public void run() {
@@ -99,10 +96,8 @@ public class NetPicActivity extends BaseActivity {
             };
             netThread.start();
 
-
         });
         photoView = (SimpleDraweeView) findViewById(R.id.photo_view);
-//        photoView.setImageUrl(urlPre + currPage);
 
         fullScreen();
         showPage(currPage);

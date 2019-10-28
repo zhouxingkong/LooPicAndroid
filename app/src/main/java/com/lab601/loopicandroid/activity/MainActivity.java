@@ -26,47 +26,11 @@ import java.util.List;
 import static com.lab601.loopicandroid.module.SourceManager.PICTURE_PATH;
 
 public class MainActivity extends BaseActivity {
-    public double MAX_SIZE = 2000000.0;
-
     SimpleDraweeView photoView;
-
     TextView textView;
-
     int currPage = 100;
-
     MediaPlayer mediaPlayer;
     Button preButton;
-    /**
-     * @param index
-     */
-    public void onPageChanged(int index) {
-        Log.d("xingkong", "浏览索引:" + index);
-
-
-        if (ConfigManager.getInstance().isSound()) {
-            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
-            List<File> soundFiles = displayMenu.getSoundList();
-            if (soundFiles != null && soundFiles.size() > 0) {
-                playSound(soundFiles, 0);
-            } else {
-                mediaPlayer.stop();
-            }
-        }
-
-        /*显示文本*/
-        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
-        text = text.replace("{", "<font color='#ff0000'>");
-        text = text.replace("}", "</font>");
-        if (text.equals("#")) {
-            text = "";
-        }
-        textView.setText(Html.fromHtml(text, 0));
-
-
-    }
-
-
-
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -159,32 +123,35 @@ public class MainActivity extends BaseActivity {
 
             Uri uri = Uri.parse("file://" + PICTURE_PATH + "/" + fileName);
             photoView.setImageURI(uri);
-
-//            FileInputStream fis = null;
-//            try {
-//                fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
-//            } catch (FileNotFoundException e) {
-//                Log.d("xingkong", "文件未找到");
-//                e.printStackTrace();
-//            }
-
-//            Bitmap bitmap = BitmapFactory.decodeStream(fis);
-//
-//            //解决过大的bitmap
-//            int w = bitmap.getWidth();//get width
-//            int h = bitmap.getHeight();//get height
-//            long size = w * h * 4;
-//            if (size > 16000000) {
-//                double ratio = Math.sqrt(((double) size) / 16000000.0);
-//                System.out.println(ratio);
-//                w = (int) ((double) w / ratio);
-//                h = (int) ((double) h / ratio);
-//                bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
-//            }
-//
-//            photoView.setImageBitmap(bitmap);
             onPageChanged(index);
         }
+    }
+
+    /**
+     * @param index
+     */
+    public void onPageChanged(int index) {
+        Log.d("xingkong", "浏览索引:" + index);
+
+
+        if (ConfigManager.getInstance().isSound()) {
+            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
+            List<File> soundFiles = displayMenu.getSoundList();
+            if (soundFiles != null && soundFiles.size() > 0) {
+                playSound(soundFiles, 0);
+            } else {
+                mediaPlayer.stop();
+            }
+        }
+
+        /*显示文本*/
+        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
+        text = text.replace("{", "<font color='#ff0000'>");
+        text = text.replace("}", "</font>");
+        if (text.equals("#")) {
+            text = "";
+        }
+        textView.setText(Html.fromHtml(text, 0));
     }
 
 

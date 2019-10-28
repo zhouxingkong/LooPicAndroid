@@ -38,6 +38,7 @@ public class InitActivity extends BaseActivity {
     Button landscapeButton;
     Button soundButton;
     EditText initPosEdit;
+    EditText ipEdit;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -87,13 +88,18 @@ public class InitActivity extends BaseActivity {
         startNetPicButton = (Button) findViewById(R.id.start_net_loo);
         startNetPicButton.setOnClickListener((view) -> {
             int startPos = 0;
+            String ip = "";
             try {
                 String startPosStr = initPosEdit.getText().toString();
                 startPos = Integer.parseInt(startPosStr);
+                ip = ipEdit.getText().toString();
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
             ConfigManager.getInstance().setStartIndex(startPos);
+            if (ip.length() > 5) {
+                ConfigManager.getInstance().setUrl(ip);
+            }
 
             Intent intent = new Intent();
             intent.setClass(InitActivity.this, NetPicActivity.class);
@@ -101,7 +107,7 @@ public class InitActivity extends BaseActivity {
         });
 
         initPosEdit = (EditText) findViewById(R.id.start_index);
-
+        ipEdit = (EditText) findViewById(R.id.server_ip);
 
         soundButton = (Button) findViewById(R.id.sound_on);
         landscapeButton = (Button) findViewById(R.id.landscape_on);
