@@ -107,11 +107,14 @@ public class NetPicActivity extends BaseActivity {
     @Override
     public void showCurrPage() {
         ImagePipeline imagePipeline = Fresco.getImagePipeline();
-        imagePipeline.clearCaches();
+//        imagePipeline.clearCaches();
+        Uri uri = Uri.parse(urlPre + currPage);
+        imagePipeline.evictFromCache(uri);
         showPage(currPage);
     }
 
     public void showPage(int index) {
+        /*渐进加载图片，然而并没有什么卵用*/
         Uri uri = Uri.parse(urlPre + index);
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setProgressiveRenderingEnabled(true)

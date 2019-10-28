@@ -81,7 +81,7 @@ public class MainActivity extends BaseActivity {
             setContentView(R.layout.activity_netpic_landscape);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            setContentView(R.layout.activity_main_vertical);
+            setContentView(R.layout.activity_netpic_vertical);
         }
 
 
