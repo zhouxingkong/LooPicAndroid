@@ -24,10 +24,16 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // https://mvnrepository.com/artifact/androidx.appcompat/appcompat
+    //implementation 'androidx.appcompat:appcompat:1.1.0'
+
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
-    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    //implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation 'com.facebook.fresco:fresco:2.0.0'
+    //implementation 'com.facebook.fresco:animated-webp:0.12.0'
+    //implementation 'com.facebook.fresco:webpsupport:0.12.0'
     // https://mvnrepository.com/artifact/com.koushikdutta.ion/ion
     //implementation 'com.koushikdutta.async:androidasync:3.0.8'
     //implementation 'com.koushikdutta.ion:ion:3.0.8'

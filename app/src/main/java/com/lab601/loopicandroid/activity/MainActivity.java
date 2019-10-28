@@ -9,20 +9,16 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.chrisbanes.photoview.PhotoView;
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.module.ConfigManager;
 import com.lab601.loopicandroid.module.DisplayMenu;
 import com.lab601.loopicandroid.module.SourceManager;
-import com.lab601.loopicandroid.view.LooViewPager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,13 +31,14 @@ import static com.lab601.loopicandroid.module.SourceManager.PICTURE_PATH;
 public class MainActivity extends BaseActivity {
     public double MAX_SIZE = 2000000.0;
 
-    LooViewPager photoView;
+    ImageView photoView;
+
     TextView textView;
 
     int currPage = 100;
 
     MediaPlayer mediaPlayer;
-
+    Button preButton;
     /**
      * @param index
      */
@@ -78,11 +75,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int startIndex = ConfigManager.getInstance().getStartIndex();
+        currPage = startIndex;
 
         boolean landscape = ConfigManager.getInstance().isLandscape();
         if (landscape) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setContentView(R.layout.activity_main_landscape);
+            setContentView(R.layout.activity_netpic_landscape);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             setContentView(R.layout.activity_main_vertical);
@@ -100,20 +99,26 @@ public class MainActivity extends BaseActivity {
         Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
         textView.setTypeface(typeface);
 
-        textView.setOnClickListener((view) -> {
-            int curr = photoView.getCurrentItem();
-            photoView.setCurrentItem(curr + 1, true);
+        textView.setOnClickListener((view) -> {     //下一页
+            currPage++;
+            showPage(currPage);
         });
-        photoView = (LooViewPager) findViewById(R.id.photo_view);
+
+        preButton = (Button) findViewById(R.id.pre_pic);
+        preButton.setOnClickListener((view) -> {     //下一页
+            if (currPage > 0) {
+                currPage--;
+                showPage(currPage);
+            }
+        });
+
+        photoView = (ImageView) findViewById(R.id.photo_view);
         photoView.setBackgroundColor(Color.BLACK);
-        photoView.setAdapter(new LooPagerAdapter());
-        int startIndex = ConfigManager.getInstance().getStartIndex();
-        if (startIndex > 0) {
-            photoView.setCurrentItem(startIndex, false);
-        }
+
 
 
         fullScreen();
+        showPage(currPage);
     }
 
     /**
@@ -147,87 +152,121 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    public void showPage(int index) {
+        DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
+        String fileName = displayMenu.getPicFileName();
+        if (fileName.equals("#") || fileName.length() < 1) {   //没有文件，表演黑屏
+            ColorDrawable colorDrawable = new ColorDrawable(
+                    getResources().getColor(R.color.black));
+            photoView.setImageDrawable(colorDrawable);
+        } else {   //有文件，表演文件
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
+            } catch (FileNotFoundException e) {
+                Log.d("xingkong", "文件未找到");
+                e.printStackTrace();
+            }
+
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+
+            //解决过大的bitmap
+            int w = bitmap.getWidth();//get width
+            int h = bitmap.getHeight();//get height
+            long size = w * h * 4;
+            if (size > 16000000) {
+                double ratio = Math.sqrt(((double) size) / 16000000.0);
+                System.out.println(ratio);
+                w = (int) ((double) w / ratio);
+                h = (int) ((double) h / ratio);
+                bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
+            }
+
+            photoView.setImageBitmap(bitmap);
+            onPageChanged(index);
+        }
+    }
 
     /**
      * 图片翻页插件适配器
      */
-    class LooPagerAdapter extends PagerAdapter {
-
-        @Override
-        public int getCount() {
-            return SourceManager.getInstance().getDisplayMenus().size();
-        }
-
-
-        @Override
-        public View instantiateItem(ViewGroup container, int position) {
-
-            PhotoView photoView = new PhotoView(container.getContext());
-
-            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(position);
-            String fileName = displayMenu.getPicFileName();
-            if (fileName.equals("#") || fileName.length() < 1) {   //没有文件，表演黑屏
-                ColorDrawable colorDrawable = new ColorDrawable(
-                        getResources().getColor(R.color.black));
-                photoView.setImageDrawable(colorDrawable);
-            } else {   //有文件，表演文件
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
-                } catch (FileNotFoundException e) {
-                    Log.d("xingkong", "文件未找到");
-                    e.printStackTrace();
-                }
-
-                Bitmap bitmap = BitmapFactory.decodeStream(fis);
-
-                //解决过大的bitmap
-                int w = bitmap.getWidth();//get width
-                int h = bitmap.getHeight();//get height
-                long size = w * h * 4;
-                if (size > 16000000) {
-                    double ratio = Math.sqrt(((double) size) / 16000000.0);
-                    System.out.println(ratio);
-                    w = (int) ((double) w / ratio);
-                    h = (int) ((double) h / ratio);
-                    bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
-                }
-
-                photoView.setImageBitmap(bitmap);
-            }
-
-            // Now just add PhotoView to ViewPager and return it
-            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return photoView;
-        }
-
-        /**
-         * 图片切换监听
-         *
-         * @param container
-         * @param position
-         * @param object
-         */
-        @Override
-        public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-
-            if (currPage != position) {
-                onPageChanged(position);
-            }
-            currPage = position;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-    }
+//    class LooPagerAdapter extends PagerAdapter {
+//
+//        @Override
+//        public int getCount() {
+//            return SourceManager.getInstance().getDisplayMenus().size();
+//        }
+//
+//
+//        @Override
+//        public View instantiateItem(ViewGroup container, int position) {
+//
+//            PhotoView photoView = new PhotoView(container.getContext());
+//
+//            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(position);
+//            String fileName = displayMenu.getPicFileName();
+//            if (fileName.equals("#") || fileName.length() < 1) {   //没有文件，表演黑屏
+//                ColorDrawable colorDrawable = new ColorDrawable(
+//                        getResources().getColor(R.color.black));
+//                photoView.setImageDrawable(colorDrawable);
+//            } else {   //有文件，表演文件
+//                FileInputStream fis = null;
+//                try {
+//                    fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
+//                } catch (FileNotFoundException e) {
+//                    Log.d("xingkong", "文件未找到");
+//                    e.printStackTrace();
+//                }
+//
+//                Bitmap bitmap = BitmapFactory.decodeStream(fis);
+//
+//                //解决过大的bitmap
+//                int w = bitmap.getWidth();//get width
+//                int h = bitmap.getHeight();//get height
+//                long size = w * h * 4;
+//                if (size > 16000000) {
+//                    double ratio = Math.sqrt(((double) size) / 16000000.0);
+//                    System.out.println(ratio);
+//                    w = (int) ((double) w / ratio);
+//                    h = (int) ((double) h / ratio);
+//                    bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
+//                }
+//
+//                photoView.setImageBitmap(bitmap);
+//            }
+//
+//            // Now just add PhotoView to ViewPager and return it
+//            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//            return photoView;
+//        }
+//
+//        /**
+//         * 图片切换监听
+//         *
+//         * @param container
+//         * @param position
+//         * @param object
+//         */
+//        @Override
+//        public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+//
+//            if (currPage != position) {
+//                onPageChanged(position);
+//            }
+//            currPage = position;
+//        }
+//
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            container.removeView((View) object);
+//        }
+//
+//        @Override
+//        public boolean isViewFromObject(View view, Object object) {
+//            return view == object;
+//        }
+//
+//    }
 
 
 

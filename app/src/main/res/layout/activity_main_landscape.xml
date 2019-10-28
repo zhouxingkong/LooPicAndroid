@@ -36,7 +36,7 @@
         android:layout_width="1dp"
         android:layout_height="match_parent" />
 
-    <com.lab601.loopicandroid.view.LooViewPager
+    <ImageView
         android:id="@+id/photo_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
