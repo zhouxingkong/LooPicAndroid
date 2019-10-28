@@ -29,6 +29,7 @@ import static android.R.attr.uiOptions;
 public class BaseActivity extends AppCompatActivity {
 
     public static final int MESSAGE_SHOW_PIC = 10000;
+    public static final int MESSAGE_CLEAN = 10001;
 
     private static PermissionListener mListener;
 
@@ -36,6 +37,7 @@ public class BaseActivity extends AppCompatActivity {
 
     String urlPre = "http:/192.168.1.107:8080/loopicserver/show/";
     String urlChange = "http:/192.168.1.107:8080/changepic/";
+    String urlClear = "http:/192.168.1.107:8080/erasecache";
 
     public static void requestRuntimePermissions(
             String[] permissions, PermissionListener listener) {
@@ -65,6 +67,7 @@ public class BaseActivity extends AppCompatActivity {
 
         urlPre = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
         urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/changepic/";
+        urlClear = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/erasecache";
 
         preloadImage(0);
         preloadImage(1);

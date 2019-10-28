@@ -10,7 +10,10 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.listener.PermissionListener;
 import com.lab601.loopicandroid.module.ConfigManager;
@@ -18,6 +21,8 @@ import com.lab601.loopicandroid.module.InitialCallback;
 import com.lab601.loopicandroid.module.SourceManager;
 import com.lab601.loopicandroid.tasks.GetTextTask;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import static com.lab601.loopicandroid.module.SourceManager.ROOT_PATH;
@@ -37,6 +42,7 @@ public class InitActivity extends BaseActivity {
 
     Button landscapeButton;
     Button soundButton;
+    Button clearCacheButton;
     EditText initPosEdit;
     EditText ipEdit;
 
@@ -53,12 +59,27 @@ public class InitActivity extends BaseActivity {
                     statTextView.setText("初始化失败");
                     break;
                 }
+                case MESSAGE_CLEAN: {
+                    doClean();
+                    Toast.makeText(getBaseContext(), "清理完成", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 default:
                     break;
             }
         }
 
     };
+
+    public void doClean() {
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        imagePipeline.clearCaches();
+        ConfigManager.preloadMap.clear();
+
+        preloadImage(0);
+        preloadImage(1);
+        preloadImage(2);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +132,30 @@ public class InitActivity extends BaseActivity {
 
         soundButton = (Button) findViewById(R.id.sound_on);
         landscapeButton = (Button) findViewById(R.id.landscape_on);
+        clearCacheButton = (Button) findViewById(R.id.clear_cache);
+
+
+        clearCacheButton.setOnClickListener(v -> {   //静音按钮
+            Thread netThread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        URL url = new URL(urlClear);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("POST");//设置请求方式为POST
+                        connection.connect();//连接
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode == 200) {
+                            handler.sendEmptyMessage(MESSAGE_CLEAN);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            netThread.start();
+
+        });
 
         soundButton.setOnClickListener(v -> {   //静音按钮
             if (ConfigManager.getInstance().isSound()) {
@@ -131,6 +176,8 @@ public class InitActivity extends BaseActivity {
                 ConfigManager.getInstance().setLandscape(true);
             }
         });
+
+
 
         /*设置回调*/
         SourceManager.getInstance().setInitialCallback(new InitialCallback() {
