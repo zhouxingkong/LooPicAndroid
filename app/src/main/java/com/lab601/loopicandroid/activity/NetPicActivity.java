@@ -153,7 +153,7 @@ public class NetPicActivity extends BaseActivity {
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
         List<String> textList = ConfigManager.getInstance().getText();
         if (textList != null && textList.size() > currPage) {
-            String text = textList.get(currPage);
+            String text = decode(textList.get(currPage));
             text = text.replace("{", "<font color='#ff0000'>");
             text = text.replace("}", "</font>");
             if (text.equals("#")) {
@@ -165,6 +165,20 @@ public class NetPicActivity extends BaseActivity {
         }
 
 
+    }
+
+    /**
+     * 客户端解密
+     *
+     * @param in
+     * @return
+     */
+    public String decode(String in) {
+        byte[] byteArray = in.getBytes();
+        for (int i = 0; i < byteArray.length; i++) {
+            byteArray[i] -= 1;
+        }
+        return new String(byteArray);
     }
 
     /**
