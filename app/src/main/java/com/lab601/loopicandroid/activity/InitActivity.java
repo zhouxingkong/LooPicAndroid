@@ -16,6 +16,7 @@ import com.lab601.loopicandroid.listener.PermissionListener;
 import com.lab601.loopicandroid.module.ConfigManager;
 import com.lab601.loopicandroid.module.InitialCallback;
 import com.lab601.loopicandroid.module.SourceManager;
+import com.lab601.loopicandroid.tasks.GetTextTask;
 
 import java.util.List;
 
@@ -62,6 +63,10 @@ public class InitActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
+
+        GetTextTask getTextTask = new GetTextTask(handler);
+        getTextTask.start();
+
         statTextView = (TextView) findViewById(R.id.init_stat);
         startButton = (Button) findViewById(R.id.start_loo);
         startButton.setOnClickListener((view) -> {

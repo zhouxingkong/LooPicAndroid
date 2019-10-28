@@ -32,11 +32,8 @@ dependencies {
 
     //implementation 'com.github.chrisbanes:PhotoView:2.0.0'
     implementation 'com.facebook.fresco:fresco:2.0.0'
-    //implementation 'com.facebook.fresco:animated-webp:0.12.0'
-    //implementation 'com.facebook.fresco:webpsupport:0.12.0'
-    // https://mvnrepository.com/artifact/com.koushikdutta.ion/ion
-    //implementation 'com.koushikdutta.async:androidasync:3.0.8'
-    //implementation 'com.koushikdutta.ion:ion:3.0.8'
+    implementation group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7'
 
 
     testImplementation 'junit:junit:4.12'

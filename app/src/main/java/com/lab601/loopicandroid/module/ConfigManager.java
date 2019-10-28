@@ -1,16 +1,21 @@
 package com.lab601.loopicandroid.module;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConfigManager {
 
     private static ConfigManager mInstance;
     private boolean landscape = true;   //横屏
     private boolean sound = false;  //静音
-    private String url = "192.168.1.107";
+    //    private String url = "192.168.1.107";
+    private String url = "192.168.31.226";
 
     private int startIndex = 0;
+    private List<String> text = null;
 
     private ConfigManager() {
-
+        text = new ArrayList<>();
     }
 
     public static ConfigManager getInstance() {
@@ -51,6 +56,15 @@ public class ConfigManager {
 
     public ConfigManager setUrl(String url) {
         this.url = url;
+        return this;
+    }
+
+    public List<String> getText() {
+        return text;
+    }
+
+    public ConfigManager setText(List<String> text) {
+        this.text = text;
         return this;
     }
 }

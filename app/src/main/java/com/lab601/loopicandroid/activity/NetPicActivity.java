@@ -3,8 +3,11 @@ package com.lab601.loopicandroid.activity;
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,9 +19,14 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.module.ConfigManager;
+import com.lab601.loopicandroid.module.DisplayMenu;
+import com.lab601.loopicandroid.module.SourceManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 public class NetPicActivity extends BaseActivity {
     public double MAX_SIZE = 2000000.0;
@@ -31,6 +39,7 @@ public class NetPicActivity extends BaseActivity {
     String urlChange = "http:/192.168.1.107:8080/changepic/";
 
     int currPage = 100;
+    MediaPlayer mediaPlayer;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -80,9 +89,6 @@ public class NetPicActivity extends BaseActivity {
                         URL url = new URL(urlStr);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("POST");//设置请求方式为POST
-//                        connection.setDoOutput(true);//允许写出
-//                        connection.setDoInput(true);//允许读入
-//                        connection.setUseCaches(false);//不使用缓存
                         connection.connect();//连接
                         int responseCode = connection.getResponseCode();
                         if (responseCode == 200) {
@@ -125,7 +131,75 @@ public class NetPicActivity extends BaseActivity {
                 .build();
         photoView.setController(controller);
 //        photoView.setImageURI(uri);
+        onPageChanged(index);
     }
 
+
+    /**
+     * @param index
+     */
+    public void onPageChanged(int index) {
+        Log.d("xingkong", "浏览索引:" + index);
+
+
+        if (ConfigManager.getInstance().isSound()) {
+            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(index);
+            List<File> soundFiles = displayMenu.getSoundList();
+            if (soundFiles != null && soundFiles.size() > 0) {
+                playSound(soundFiles, 0);
+            } else {
+                mediaPlayer.stop();
+            }
+        }
+
+        /*显示文本*/
+//        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
+        List<String> textList = ConfigManager.getInstance().getText();
+        if (textList != null && textList.size() > currPage) {
+            String text = textList.get(currPage);
+            text = text.replace("{", "<font color='#ff0000'>");
+            text = text.replace("}", "</font>");
+            if (text.equals("#")) {
+                text = "";
+            }
+            textView.setText(Html.fromHtml(text, 0));
+        } else {
+            textView.setText(Html.fromHtml("", 0));
+        }
+
+
+    }
+
+    /**
+     * 播放音频
+     *
+     * @param path
+     * @param index 播放到第几个了
+     */
+    public void playSound(List<File> path, int index) {
+//        Log.d("xingkong", "playSound: 路径:" + path);
+        if (path == null || path.size() < 1 || path.size() < index + 1) {
+            return;
+        }
+        try {
+            mediaPlayer.stop();
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(path.get(index).getPath());
+            if (path.size() > index + 1) {
+                /*播放完成回调函数*/
+                mediaPlayer.setOnCompletionListener((mp -> {
+                    Log.d("xingkong", "playSound: 音频播放完毕");
+                    playSound(path, index + 1);
+                }));
+            }
+
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            Log.e("xingkong", "playSound: 播放音频异常", e);
+            e.printStackTrace();
+        }
+
+    }
 
 }
