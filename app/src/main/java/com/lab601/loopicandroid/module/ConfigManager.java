@@ -5,7 +5,7 @@ public class ConfigManager {
     private static ConfigManager mInstance;
     private boolean landscape = true;   //横屏
     private boolean sound = false;  //静音
-    private String url = "107";
+    private String url = "192.168.1.107";
 
     private int startIndex = 0;
 

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
@@ -20,6 +22,9 @@ import java.util.List;
 import static android.R.attr.uiOptions;
 
 public class BaseActivity extends AppCompatActivity {
+
+    public static final int MESSAGE_SHOW_PIC = 10000;
+
     private static PermissionListener mListener;
 
     private static Activity activity;
@@ -52,12 +57,35 @@ public class BaseActivity extends AppCompatActivity {
         activity = this;
     }
 
+    Handler handler = new Handler() {
+
+        /**
+         * 接收Message信息, 只要Handler对象执行了SendMessage方法， 这个方法就会触发
+         */
+        @Override
+        public void handleMessage(Message msg) {
+
+            // 获取Message的what数值
+            int index = msg.what;
+            switch (msg.what) {
+                case MESSAGE_SHOW_PIC: {
+                    showCurrPage();
+                }
+            }
+
+        }
+
+    };
+
 //    @Override
 //    public void onResume() {
 //
 //        super.onResume();
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 //    }
+public void showCurrPage() {
+
+}
 
     /**
      * 申请后的处理

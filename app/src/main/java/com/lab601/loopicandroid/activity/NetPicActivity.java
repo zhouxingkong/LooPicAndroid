@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.lab601.loopicandroid.R;
@@ -27,6 +28,7 @@ public class NetPicActivity extends BaseActivity {
     Button changeButton;
     Button preButton;
     String urlPre = "http:/192.168.1.107:8080/loopicserver/show/";
+    String urlChange = "http:/192.168.1.107:8080/changepic/";
 
     int currPage = 100;
 
@@ -36,8 +38,8 @@ public class NetPicActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         int startIndex = ConfigManager.getInstance().getStartIndex();
         currPage = startIndex;
-        urlPre = "http:/192.168.1." + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
-
+        urlPre = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
+        urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/changepic/";
 
         boolean landscape = ConfigManager.getInstance().isLandscape();
         if (landscape) {
@@ -70,19 +72,28 @@ public class NetPicActivity extends BaseActivity {
         changeButton = (Button) findViewById(R.id.change_pic);
         changeButton.setOnClickListener((view) -> {
 
-            try {
-                String urlStr = "https://www.baidu.com/";
-                URL url = new URL(urlStr);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");//设置请求方式为POST
-                connection.setDoOutput(true);//允许写出
-                connection.setDoInput(true);//允许读入
-                connection.setUseCaches(false);//不使用缓存
-                connection.connect();//连接
-                int responseCode = connection.getResponseCode();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Thread netThread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        String urlStr = urlChange + currPage;
+                        URL url = new URL(urlStr);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("POST");//设置请求方式为POST
+//                        connection.setDoOutput(true);//允许写出
+//                        connection.setDoInput(true);//允许读入
+//                        connection.setUseCaches(false);//不使用缓存
+                        connection.connect();//连接
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode == 200) {
+                            handler.sendEmptyMessage(MESSAGE_SHOW_PIC);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            netThread.start();
 
 
         });
@@ -90,6 +101,13 @@ public class NetPicActivity extends BaseActivity {
 //        photoView.setImageUrl(urlPre + currPage);
 
         fullScreen();
+        showPage(currPage);
+    }
+
+    @Override
+    public void showCurrPage() {
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        imagePipeline.clearCaches();
         showPage(currPage);
     }
 
@@ -105,5 +123,6 @@ public class NetPicActivity extends BaseActivity {
         photoView.setController(controller);
 //        photoView.setImageURI(uri);
     }
+
 
 }
