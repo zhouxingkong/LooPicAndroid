@@ -35,8 +35,7 @@ public class NetPicActivity extends BaseActivity {
     TextView textView;
     Button changeButton;
     Button preButton;
-    String urlPre = "http:/192.168.1.107:8080/loopicserver/show/";
-    String urlChange = "http:/192.168.1.107:8080/changepic/";
+
 
     int currPage = 100;
     MediaPlayer mediaPlayer;
@@ -47,8 +46,7 @@ public class NetPicActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         int startIndex = ConfigManager.getInstance().getStartIndex();
         currPage = startIndex;
-        urlPre = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
-        urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/changepic/";
+
 
         boolean landscape = ConfigManager.getInstance().isLandscape();
         if (landscape) {
@@ -132,6 +130,10 @@ public class NetPicActivity extends BaseActivity {
         photoView.setController(controller);
 //        photoView.setImageURI(uri);
         onPageChanged(index);
+
+        //预加载
+        preloadImage(currPage + 1);
+        preloadImage(currPage + 2);
     }
 
 

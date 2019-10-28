@@ -2,6 +2,7 @@ package com.lab601.loopicandroid.activity;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.lab601.loopicandroid.listener.PermissionListener;
+import com.lab601.loopicandroid.module.ConfigManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,9 @@ public class BaseActivity extends AppCompatActivity {
     private static PermissionListener mListener;
 
     private static Activity activity;
+
+    String urlPre = "http:/192.168.1.107:8080/loopicserver/show/";
+    String urlChange = "http:/192.168.1.107:8080/changepic/";
 
     public static void requestRuntimePermissions(
             String[] permissions, PermissionListener listener) {
@@ -54,6 +62,13 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        urlPre = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
+        urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/changepic/";
+
+        preloadImage(0);
+        preloadImage(1);
+        preloadImage(2);
         activity = this;
     }
 
@@ -86,6 +101,19 @@ public class BaseActivity extends AppCompatActivity {
 public void showCurrPage() {
 
 }
+
+    public void preloadImage(int index) {
+        if (!ConfigManager.preloadMap.containsKey(index)) {
+            Uri uri = Uri.parse(urlPre + index);
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            ImageRequest imageRequest = ImageRequest.fromUri(uri);
+            imagePipeline.prefetchToDiskCache(imageRequest, getApplicationContext());
+
+            ConfigManager.preloadMap.put(index, "ok");
+        }
+
+
+    }
 
     /**
      * 申请后的处理
