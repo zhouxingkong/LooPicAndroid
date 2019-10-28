@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.module.ConfigManager;
 import com.lab601.loopicandroid.module.DisplayMenu;
@@ -31,7 +31,7 @@ import static com.lab601.loopicandroid.module.SourceManager.PICTURE_PATH;
 public class MainActivity extends BaseActivity {
     public double MAX_SIZE = 2000000.0;
 
-    ImageView photoView;
+    SimpleDraweeView photoView;
 
     TextView textView;
 
@@ -112,7 +112,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        photoView = (ImageView) findViewById(R.id.photo_view);
+        photoView = (SimpleDraweeView) findViewById(R.id.photo_view);
         photoView.setBackgroundColor(Color.BLACK);
 
 
@@ -186,90 +186,6 @@ public class MainActivity extends BaseActivity {
             onPageChanged(index);
         }
     }
-
-    /**
-     * 图片翻页插件适配器
-     */
-//    class LooPagerAdapter extends PagerAdapter {
-//
-//        @Override
-//        public int getCount() {
-//            return SourceManager.getInstance().getDisplayMenus().size();
-//        }
-//
-//
-//        @Override
-//        public View instantiateItem(ViewGroup container, int position) {
-//
-//            PhotoView photoView = new PhotoView(container.getContext());
-//
-//            DisplayMenu displayMenu = SourceManager.getInstance().getDisplayMenus().get(position);
-//            String fileName = displayMenu.getPicFileName();
-//            if (fileName.equals("#") || fileName.length() < 1) {   //没有文件，表演黑屏
-//                ColorDrawable colorDrawable = new ColorDrawable(
-//                        getResources().getColor(R.color.black));
-//                photoView.setImageDrawable(colorDrawable);
-//            } else {   //有文件，表演文件
-//                FileInputStream fis = null;
-//                try {
-//                    fis = new FileInputStream(PICTURE_PATH + "/" + fileName);
-//                } catch (FileNotFoundException e) {
-//                    Log.d("xingkong", "文件未找到");
-//                    e.printStackTrace();
-//                }
-//
-//                Bitmap bitmap = BitmapFactory.decodeStream(fis);
-//
-//                //解决过大的bitmap
-//                int w = bitmap.getWidth();//get width
-//                int h = bitmap.getHeight();//get height
-//                long size = w * h * 4;
-//                if (size > 16000000) {
-//                    double ratio = Math.sqrt(((double) size) / 16000000.0);
-//                    System.out.println(ratio);
-//                    w = (int) ((double) w / ratio);
-//                    h = (int) ((double) h / ratio);
-//                    bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false);
-//                }
-//
-//                photoView.setImageBitmap(bitmap);
-//            }
-//
-//            // Now just add PhotoView to ViewPager and return it
-//            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//            return photoView;
-//        }
-//
-//        /**
-//         * 图片切换监听
-//         *
-//         * @param container
-//         * @param position
-//         * @param object
-//         */
-//        @Override
-//        public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-//
-//            if (currPage != position) {
-//                onPageChanged(position);
-//            }
-//            currPage = position;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) object);
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//    }
-
-
-
 
 
 }
