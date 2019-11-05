@@ -1,5 +1,6 @@
 package com.lab601.loopicandroid.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -75,35 +76,21 @@ public class BaseActivity extends AppCompatActivity {
         activity = this;
     }
 
+    @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
-
-        /**
-         * 接收Message信息, 只要Handler对象执行了SendMessage方法， 这个方法就会触发
-         */
         @Override
         public void handleMessage(Message msg) {
-
-            // 获取Message的what数值
-            int index = msg.what;
             switch (msg.what) {
                 case MESSAGE_SHOW_PIC: {
                     showCurrPage();
                 }
             }
-
         }
-
     };
 
-//    @Override
-//    public void onResume() {
-//
-//        super.onResume();
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//    }
-public void showCurrPage() {
+    public void showCurrPage() {
 
-}
+    }
 
     public void preloadImage(int index) {
         if (!ConfigManager.preloadMap.containsKey(index)) {

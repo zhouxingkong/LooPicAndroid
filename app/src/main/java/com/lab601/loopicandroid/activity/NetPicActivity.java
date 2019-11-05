@@ -2,7 +2,6 @@ package com.lab601.loopicandroid.activity;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 
 public class NetPicActivity extends BaseActivity {
@@ -59,8 +59,8 @@ public class NetPicActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.loo_text);
         /*设置文本字体*/
 //        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/loo_font1.ttf");  // mContext为上下文
-        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
-        textView.setTypeface(typeface);
+//        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
+//        textView.setTypeface(typeface);
         textView.setOnClickListener((view) -> { //下一张图
             currPage++;
             showPage(currPage);
@@ -153,7 +153,7 @@ public class NetPicActivity extends BaseActivity {
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
         List<String> textList = ConfigManager.getInstance().getText();
         if (textList != null && textList.size() > currPage) {
-            String text = decode(textList.get(currPage));
+            String text = decodeBase64(textList.get(currPage));
             text = text.replace("{", "<font color='#ff0000'>");
             text = text.replace("}", "</font>");
             if (text.equals("#")) {
@@ -179,6 +179,10 @@ public class NetPicActivity extends BaseActivity {
             byteArray[i] -= 1;
         }
         return new String(byteArray);
+    }
+
+    public String decodeBase64(String data) {
+        return new String(Base64.getDecoder().decode(data.getBytes()));
     }
 
     /**
