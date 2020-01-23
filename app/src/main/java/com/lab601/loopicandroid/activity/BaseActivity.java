@@ -36,9 +36,9 @@ public class BaseActivity extends AppCompatActivity {
 
     private static Activity activity;
 
-    String urlPre = "http:/192.168.1.107:8080/loopicserver/show/";
-    String urlChange = "http:/192.168.1.107:8080/changepic/";
-    String urlClear = "http:/192.168.1.107:8080/erasecache";
+    String urlPre = "http:/192.168.43.139:8080/loopicserver/show/";
+    String urlChange = "http:/192.168.43.139:8080/changepic/";
+    String urlClear = "http:/192.168.43.139:8080/erasecache";
 
     public static void requestRuntimePermissions(
             String[] permissions, PermissionListener listener) {

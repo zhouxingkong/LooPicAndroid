@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +21,16 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.lab601.loopicandroid.R;
 import com.lab601.loopicandroid.listener.PermissionListener;
 import com.lab601.loopicandroid.module.ConfigManager;
+import com.lab601.loopicandroid.module.EncodeHelper;
 import com.lab601.loopicandroid.module.InitialCallback;
 import com.lab601.loopicandroid.module.SourceManager;
 import com.lab601.loopicandroid.tasks.GetTextTask;
+import com.lab601.loopicandroid.tasks.ShowChapterListTask;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.lab601.loopicandroid.module.SourceManager.ROOT_PATH;
 
@@ -43,7 +50,8 @@ public class InitActivity extends BaseActivity {
     Button landscapeButton;
     Button soundButton;
     Button clearCacheButton;
-    EditText initPosEdit;
+    ListView chapterList;
+    TextView initPosText;
     EditText ipEdit;
 
     @SuppressLint("HandlerLeak")
@@ -86,20 +94,43 @@ public class InitActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
 
+        ConfigManager.getInstance().setUrl(this.getString(R.string.ip));
+
         GetTextTask getTextTask = new GetTextTask(handler);
         getTextTask.start();
 
         statTextView = (TextView) findViewById(R.id.init_stat);
+        chapterList = (ListView) findViewById(R.id.chapter_list);
+
+        @SuppressLint("StaticFieldLeak") ShowChapterListTask showChapterListTask = new ShowChapterListTask() {
+            public void showChapterList(List<String> data) {
+                data = data.stream().map(s -> EncodeHelper.decodeBase64(s)).collect(Collectors.toList());
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        InitActivity.this, android.R.layout.simple_list_item_1, data);
+                chapterList.setAdapter(adapter);
+            }
+        };
+        showChapterListTask.execute();
+        chapterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ConfigManager.getInstance().setStartIndex(position);
+                initPosText.setText("起始位置:" + position);
+            }
+        });
+
         startButton = (Button) findViewById(R.id.start_loo);
         startButton.setOnClickListener((view) -> {
             int startPos = 0;
-            try {
-                String startPosStr = initPosEdit.getText().toString();
-                startPos = Integer.parseInt(startPosStr);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-            ConfigManager.getInstance().setStartIndex(startPos);
+//            try {
+//                String startPosStr = initPosEdit.getText().toString();
+//                startPos = Integer.parseInt(startPosStr);
+//            } catch (NumberFormatException e) {
+//                e.printStackTrace();
+//            }
+//            ConfigManager.getInstance().setStartIndex(startPos);
 
             Intent intent = new Intent();
             intent.setClass(InitActivity.this, MainActivity.class);
@@ -108,16 +139,16 @@ public class InitActivity extends BaseActivity {
 
         startNetPicButton = (Button) findViewById(R.id.start_net_loo);
         startNetPicButton.setOnClickListener((view) -> {
-            int startPos = 0;
+//            int startPos = 0;
             String ip = "";
             try {
-                String startPosStr = initPosEdit.getText().toString();
-                startPos = Integer.parseInt(startPosStr);
+//                String startPosStr = initPosEdit.getText().toString();
+//                startPos = Integer.parseInt(startPosStr);
                 ip = ipEdit.getText().toString();
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            ConfigManager.getInstance().setStartIndex(startPos);
+//            ConfigManager.getInstance().setStartIndex(startPos);
             if (ip.length() > 5) {
                 ConfigManager.getInstance().setUrl(ip);
             }
@@ -127,7 +158,7 @@ public class InitActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        initPosEdit = (EditText) findViewById(R.id.start_index);
+        initPosText = (TextView) findViewById(R.id.start_index);
         ipEdit = (EditText) findViewById(R.id.server_ip);
 
         soundButton = (Button) findViewById(R.id.sound_on);

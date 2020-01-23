@@ -10,11 +10,10 @@ public class ConfigManager {
     private boolean landscape = true;   //横屏
     private boolean sound = false;  //静音
     public static HashMap<Integer, String> preloadMap = new HashMap<>();
-//    private String url = "192.168.31.226";
 
     private int startIndex = 0;
     private List<String> text = null;
-    private String url = "192.168.1.107";
+    private String url = "";
 
     private ConfigManager() {
         text = new ArrayList<>();

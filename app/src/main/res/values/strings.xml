@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LooPicAndroid</string>
+    <string name="ip">192.168.1.106</string>
 </resources>
