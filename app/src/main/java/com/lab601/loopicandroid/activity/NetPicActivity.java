@@ -35,6 +35,7 @@ public class NetPicActivity extends BaseActivity {
     TextView textView;
     Button changeButton;
     Button preButton;
+    Button rmButton;
 
     int currPage = 100;
     MediaPlayer mediaPlayer;
@@ -65,6 +66,8 @@ public class NetPicActivity extends BaseActivity {
             currPage++;
             showPage(currPage);
         });
+
+
         preButton = (Button) findViewById(R.id.pre_pic);
         preButton.setOnClickListener((view) -> {   //上一张图
             if (currPage > 0) {
@@ -81,6 +84,31 @@ public class NetPicActivity extends BaseActivity {
                 public void run() {
                     try {
                         String urlStr = urlChange + currPage;
+                        URL url = new URL(urlStr);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("POST");//设置请求方式为POST
+                        connection.connect();//连接
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode == 200) {
+                            handler.sendEmptyMessage(MESSAGE_SHOW_PIC);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            netThread.start();
+
+        });
+
+
+        rmButton = (Button) findViewById(R.id.rm_button);
+        rmButton.setOnClickListener((view) -> {
+            Thread netThread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        String urlStr = urlRm + currPage;
                         URL url = new URL(urlStr);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("POST");//设置请求方式为POST

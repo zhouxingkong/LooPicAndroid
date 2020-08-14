@@ -39,6 +39,7 @@ public class BaseActivity extends AppCompatActivity {
     String urlPre = "http:/192.168.43.139:8080/loopicserver/show/";
     String urlChange = "http:/192.168.43.139:8080/changepic/";
     String urlClear = "http:/192.168.43.139:8080/erasecache";
+    String urlRm = "http:/192.168.43.139:8080/rmpic/";
 
     public static void requestRuntimePermissions(
             String[] permissions, PermissionListener listener) {
@@ -68,6 +69,7 @@ public class BaseActivity extends AppCompatActivity {
 
         urlPre = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
         urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/changepic/";
+        urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/rmpic/";
         urlClear = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/erasecache";
 
         preloadImage(0);

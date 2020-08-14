@@ -13,13 +13,18 @@
         android:layout_weight="0.3"
         android:orientation="vertical">
 
-        <TextView
+        <Button
+            android:id="@+id/rm_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.05"
             android:background="@color/black"
             android:text=""
             android:textSize="23sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
         <TextView
             android:id="@+id/loo_text"
