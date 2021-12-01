@@ -124,7 +124,7 @@ class NetPicActivity : BaseActivity() {
 
     fun showPage(sceneIndex: Int,serIndex:Int) {
         /*渐进加载图片，然而并没有什么卵用*/
-        val uri = Uri.parse("${urlPic}/${sceneIndex}/${serIndex}")
+        val uri = Uri.parse("${urlPic}/${ConfigManager.instance.startStory}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
             .setProgressiveRenderingEnabled(true)
             .build()
