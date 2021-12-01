@@ -32,7 +32,8 @@ class NetPicActivity : BaseActivity() {
     var rmButton: Button? = null
 
 
-    var currPage = 100
+    var currScene = 100
+    var currSer = 0
 
 
     var mediaPlayer: MediaPlayer? = null
@@ -40,7 +41,7 @@ class NetPicActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val startIndex = ConfigManager.instance.startStory
-        currPage = startIndex
+        currScene = startIndex
         val landscape = ConfigManager.instance.isLandscape
         if (landscape) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -56,49 +57,37 @@ class NetPicActivity : BaseActivity() {
 //        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
 //        textView.setTypeface(typeface);
         textView!!.setOnClickListener { view: View? ->  //下一张图
-            currPage++
-            showPage(currPage)
+            currScene++
+            showPage(currScene,currSer)
         }
-        preButton = findViewById<View>(R.id.pre_pic) as Button
-        preButton!!.setOnClickListener { view: View? ->    //上一张图
-            if (currPage > 0) {
-                currPage--
-                showPage(currPage)
-            }
-        }
-
+        initView()
 
         photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
         fullScreen()
-        showPage(currPage)
+        showPage(currScene,currSer)
     }
 
     fun initView(){
+        initPreBtn()
         initRmBtn()
         initChangeBtn()
+    }
+
+    fun initPreBtn(){
+        preButton = findViewById<View>(R.id.pre_pic) as Button
+        preButton!!.setOnClickListener { view: View? ->    //上一张图
+            if (currScene > 0) {
+                currScene--
+                showPage(currScene,currSer)
+            }
+        }
     }
 
     fun initChangeBtn(){
         changeButton = findViewById<View>(R.id.change_pic) as Button
         changeButton!!.setOnClickListener { view: View? ->
-            val netThread: Thread = object : Thread() {
-                override fun run() {
-                    try {
-                        val urlStr = urlStoryList + currPage
-                        val url = URL(urlStr)
-                        val connection = url.openConnection() as HttpURLConnection
-                        connection.requestMethod = "POST" //设置请求方式为POST
-                        connection.connect() //连接
-                        val responseCode = connection.responseCode
-                        if (responseCode == 200) {
-                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_SHOW_PIC)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            netThread.start()
+            currSer++
+            showPage(currScene,currSer)
         }
     }
     fun initRmBtn(){
@@ -107,7 +96,7 @@ class NetPicActivity : BaseActivity() {
             val netThread: Thread = object : Thread() {
                 override fun run() {
                     try {
-                        val urlStr = urlText + currPage
+                        val urlStr = urlText + currScene
                         val url = URL(urlStr)
                         val connection = url.openConnection() as HttpURLConnection
                         connection.requestMethod = "POST" //设置请求方式为POST
@@ -128,14 +117,14 @@ class NetPicActivity : BaseActivity() {
     override fun showCurrPage() {
         val imagePipeline = Fresco.getImagePipeline()
         //        imagePipeline.clearCaches();
-        val uri = Uri.parse(urlPic + currPage)
+        val uri = Uri.parse(urlPic + currScene)
         imagePipeline.evictFromCache(uri)
-        showPage(currPage)
+        showPage(currScene,currSer)
     }
 
-    fun showPage(index: Int) {
+    fun showPage(sceneIndex: Int,serIndex:Int) {
         /*渐进加载图片，然而并没有什么卵用*/
-        val uri = Uri.parse(urlPic + index)
+        val uri = Uri.parse("${urlPic}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
             .setProgressiveRenderingEnabled(true)
             .build()
@@ -145,11 +134,11 @@ class NetPicActivity : BaseActivity() {
             .build()
         photoView!!.controller = controller
         //        photoView.setImageURI(uri);
-        onPageChanged(index)
+        onPageChanged(sceneIndex)
 
         //预加载
-        preloadImage(currPage + 1)
-        preloadImage(currPage + 2)
+        preloadImage(currScene + 1)
+        preloadImage(currScene + 2)
     }
 
     /**
@@ -170,8 +159,8 @@ class NetPicActivity : BaseActivity() {
         /*显示文本*/
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
         val textList = ConfigManager.instance.text
-        if (textList != null && textList.size > currPage) {
-            var text = decodeBase64(textList[currPage])
+        if (textList != null && textList.size > currScene) {
+            var text = decodeBase64(textList[currScene])
             text = text.replace("{", "<font color='#ff0000'>")
             text = text.replace("}", "</font>")
             if (text == "#") {
