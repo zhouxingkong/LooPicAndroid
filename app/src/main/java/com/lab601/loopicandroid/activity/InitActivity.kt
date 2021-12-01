@@ -1,37 +1,18 @@
 package com.lab601.loopicandroid.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.lab601.loopicandroid.module.ConfigManager
-import com.lab601.loopicandroid.activity.BaseActivity
 import android.annotation.SuppressLint
-import com.facebook.imagepipeline.core.ImagePipeline
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.request.ImageRequest
-import android.content.pm.PackageManager
 import android.os.Build
-import android.R.attr
 import com.lab601.loopicandroid.listener.PermissionListener
-import android.app.Activity
-import androidx.core.content.ContextCompat
-import androidx.core.app.ActivityCompat
-import com.lab601.loopicandroid.activity.InitActivity
 import com.lab601.loopicandroid.R
-import com.lab601.loopicandroid.tasks.GetTextTask
-import com.lab601.loopicandroid.tasks.ShowChapterListTask
+import com.lab601.loopicandroid.tasks.GetStoryListTask
 import com.lab601.loopicandroid.module.EncodeHelper
 import android.widget.AdapterView.OnItemClickListener
 import android.content.Intent
-import com.lab601.loopicandroid.activity.NetPicActivity
 import com.lab601.loopicandroid.module.SourceManager
 import com.lab601.loopicandroid.module.InitialCallback
-import com.facebook.drawee.view.SimpleDraweeView
-import android.content.pm.ActivityInfo
-import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.facebook.drawee.interfaces.DraweeController
-import com.lab601.loopicandroid.module.DisplayMenu
-import android.text.Html
-import android.media.MediaPlayer.OnCompletionListener
 import android.os.Handler
 import android.os.Message
 import android.util.Log
@@ -87,39 +68,33 @@ class InitActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_init)
         ConfigManager.instance?.url = this.getString(R.string.ip)
-        val getTextTask = GetTextTask(handler)
-        getTextTask.start()
+//        val getTextTask = GetTextTask(handler)
+//        getTextTask.start()
         statTextView = findViewById<View>(R.id.init_stat) as TextView
-        chapterList = findViewById<View>(R.id.chapter_list) as ListView
-        @SuppressLint("StaticFieldLeak") val showChapterListTask: ShowChapterListTask =
-            object : ShowChapterListTask() {
-                override fun showChapterList(data: List<String>) {
-                    var data = data
-                    data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
-                        .collect(Collectors.toList())
-                    val adapter = ArrayAdapter(
-                        this@InitActivity, android.R.layout.simple_list_item_1, data
-                    )
-                    chapterList!!.adapter = adapter
-                }
-            }
-        showChapterListTask.execute()
-        chapterList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            ConfigManager.instance.startIndex = position
-            initPosText!!.text = "起始位置:$position"
-        }
+        chapterList = findViewById<View>(R.id.story_list) as ListView
+
+        initPosText = findViewById<View>(R.id.start_index) as TextView
+        ipEdit = findViewById<View>(R.id.server_ip) as EditText
+        soundButton = findViewById<View>(R.id.sound_on) as Button
+        landscapeButton = findViewById<View>(R.id.landscape_on) as Button
+        clearCacheButton = findViewById<View>(R.id.clear_cache) as Button
         startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
+
+        showStoryList()
+
+        initView()
+
+        checkPermission()
+    }
+
+    fun initView(){
         startNetPicButton!!.setOnClickListener { view: View? ->
-//            int startPos = 0;
             var ip = ""
             try {
-//                String startPosStr = initPosEdit.getText().toString();
-//                startPos = Integer.parseInt(startPosStr);
                 ip = ipEdit!!.text.toString()
             } catch (e: NumberFormatException) {
                 e.printStackTrace()
             }
-            //            ConfigManager.getInstance().setStartIndex(startPos);
             if (ip.length > 5) {
                 ConfigManager.instance.url = ip
             }
@@ -127,30 +102,7 @@ class InitActivity : BaseActivity() {
             intent.setClass(this@InitActivity, NetPicActivity::class.java)
             startActivity(intent)
         }
-        initPosText = findViewById<View>(R.id.start_index) as TextView
-        ipEdit = findViewById<View>(R.id.server_ip) as EditText
-        soundButton = findViewById<View>(R.id.sound_on) as Button
-        landscapeButton = findViewById<View>(R.id.landscape_on) as Button
-        clearCacheButton = findViewById<View>(R.id.clear_cache) as Button
-        clearCacheButton!!.setOnClickListener { v: View? ->    //静音按钮
-            val netThread: Thread = object : Thread() {
-                override fun run() {
-                    try {
-                        val url = URL(urlSceneList)
-                        val connection = url.openConnection() as HttpURLConnection
-                        connection.requestMethod = "POST" //设置请求方式为POST
-                        connection.connect() //连接
-                        val responseCode = connection.responseCode
-                        if (responseCode == 200) {
-                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_CLEAN)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            netThread.start()
-        }
+
         soundButton!!.setOnClickListener { v: View? ->    //静音按钮
             if (ConfigManager.instance.isSound) {
                 soundButton!!.text = "声音:关闭"
@@ -170,8 +122,7 @@ class InitActivity : BaseActivity() {
             }
         }
 
-
-        /*设置回调*/SourceManager.instance.initialCallback = object : InitialCallback() {
+        SourceManager.instance.initialCallback = object : InitialCallback() {
             override fun onSuccess() {
                 handler.sendEmptyMessage(WHAT_INIT_SUCCESS)
             }
@@ -180,8 +131,55 @@ class InitActivity : BaseActivity() {
                 handler.sendEmptyMessage(WHAT_INIT_FAIL)
             }
         }
+        initClearCache()
 
-        /*申请权限*/if (Build.VERSION.SDK_INT >= 23) { //判断当前系统是不是Android6.0
+    }
+
+    fun showStoryList(){
+        @SuppressLint("StaticFieldLeak") val getStoryListTask: GetStoryListTask =
+            object : GetStoryListTask() {
+                override fun showChapterList(data: List<String>) {
+                    var data = data
+                    data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
+                        .collect(Collectors.toList())
+                    val adapter = ArrayAdapter(
+                        this@InitActivity, android.R.layout.simple_list_item_1, data
+                    )
+                    chapterList!!.adapter = adapter
+                }
+            }
+        getStoryListTask.execute()
+
+        chapterList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            ConfigManager.instance.startIndex = position
+            initPosText!!.text = "起始位置:$position"
+        }
+    }
+
+    fun initClearCache(){
+        clearCacheButton!!.setOnClickListener { v: View? ->    //静音按钮
+            val netThread: Thread = object : Thread() {
+                override fun run() {
+                    try {
+                        val url = URL(urlSceneList)
+                        val connection = url.openConnection() as HttpURLConnection
+                        connection.requestMethod = "POST" //设置请求方式为POST
+                        connection.connect() //连接
+                        val responseCode = connection.responseCode
+                        if (responseCode == 200) {
+                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_CLEAN)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            netThread.start()
+        }
+    }
+
+    fun checkPermission(){
+        if (Build.VERSION.SDK_INT >= 23) { //判断当前系统是不是Android6.0
             BaseActivity.Companion.requestRuntimePermissions(
                 PERMISSIONS_STORAGE,
                 object : PermissionListener {

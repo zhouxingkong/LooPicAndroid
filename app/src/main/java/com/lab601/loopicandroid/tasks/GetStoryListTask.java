@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 显示章节列表
  */
-public class ShowChapterListTask extends AsyncTask {
+public class GetStoryListTask extends AsyncTask {
     private String getChapterUrl = "http:/192.168.43.139:8080/text/chapterList";
 
     public void showChapterList(List<String> data) {

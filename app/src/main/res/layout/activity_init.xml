@@ -2,83 +2,101 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/init_stat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="正在初始化" />
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/sound_on"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="声音:关闭" />
-
-        <Button
-            android:id="@+id/landscape_on"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="横屏显示" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/start_index"
-            android:layout_width="wrap_content"
+            android:id="@+id/init_stat"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="起始图片:" />
+            android:text="正在初始化" />
 
-        <!--        <EditText-->
-        <!--            android:id="@+id/start_index"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="0" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sound_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="声音:关闭" />
+
+            <Button
+                android:id="@+id/landscape_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="横屏显示" />
+
+            <TextView
+                android:id="@+id/start_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="起始图片:" />
+
+            <!--        <EditText-->
+            <!--            android:id="@+id/start_index"-->
+            <!--            android:layout_width="wrap_content"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:text="0" />-->
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ip:" />
+
+            <EditText
+                android:id="@+id/server_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ip" />
+
+            <Button
+                android:id="@+id/clear_cache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="☼" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/story_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0" />
+
+        <!--    <Button-->
+        <!--        android:id="@+id/start_loo"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:text="准备好面对疾风" />-->
+
+        <Button
+            android:id="@+id/start_net_loo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="网络疾风" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ip:" />
-
-        <EditText
-            android:id="@+id/server_ip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ip" />
-
-        <Button
-            android:id="@+id/clear_cache"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="☼" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        android:orientation="vertical">
+        <ListView
+            android:id="@+id/scene_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/chapter_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.0" />
-
-<!--    <Button-->
-<!--        android:id="@+id/start_loo"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="准备好面对疾风" />-->
-
-    <Button
-        android:id="@+id/start_net_loo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="网络疾风" />
-
 </LinearLayout>
