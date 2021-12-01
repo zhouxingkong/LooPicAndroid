@@ -83,7 +83,7 @@ public class NetPicActivity extends BaseActivity {
                 @Override
                 public void run() {
                     try {
-                        String urlStr = urlChange + currPage;
+                        String urlStr = urlStoryList + currPage;
                         URL url = new URL(urlStr);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("POST");//设置请求方式为POST
@@ -108,7 +108,7 @@ public class NetPicActivity extends BaseActivity {
                 @Override
                 public void run() {
                     try {
-                        String urlStr = urlRm + currPage;
+                        String urlStr = urlText + currPage;
                         URL url = new URL(urlStr);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("POST");//设置请求方式为POST
@@ -135,14 +135,14 @@ public class NetPicActivity extends BaseActivity {
     public void showCurrPage() {
         ImagePipeline imagePipeline = Fresco.getImagePipeline();
 //        imagePipeline.clearCaches();
-        Uri uri = Uri.parse(urlPre + currPage);
+        Uri uri = Uri.parse(urlPic + currPage);
         imagePipeline.evictFromCache(uri);
         showPage(currPage);
     }
 
     public void showPage(int index) {
         /*渐进加载图片，然而并没有什么卵用*/
-        Uri uri = Uri.parse(urlPre + index);
+        Uri uri = Uri.parse(urlPic + index);
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setProgressiveRenderingEnabled(true)
                 .build();

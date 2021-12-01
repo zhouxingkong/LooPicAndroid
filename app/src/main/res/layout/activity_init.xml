@@ -69,11 +69,11 @@
         android:layout_height="0dp"
         android:layout_weight="1.0" />
 
-    <Button
-        android:id="@+id/start_loo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="准备好面对疾风" />
+<!--    <Button-->
+<!--        android:id="@+id/start_loo"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="准备好面对疾风" />-->
 
     <Button
         android:id="@+id/start_net_loo"

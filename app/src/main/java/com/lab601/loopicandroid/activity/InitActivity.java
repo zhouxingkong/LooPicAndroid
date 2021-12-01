@@ -121,22 +121,6 @@ public class InitActivity extends BaseActivity {
             }
         });
 
-        startButton = (Button) findViewById(R.id.start_loo);
-        startButton.setOnClickListener((view) -> {
-            int startPos = 0;
-//            try {
-//                String startPosStr = initPosEdit.getText().toString();
-//                startPos = Integer.parseInt(startPosStr);
-//            } catch (NumberFormatException e) {
-//                e.printStackTrace();
-//            }
-//            ConfigManager.getInstance().setStartIndex(startPos);
-
-            Intent intent = new Intent();
-            intent.setClass(InitActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
-
         startNetPicButton = (Button) findViewById(R.id.start_net_loo);
         startNetPicButton.setOnClickListener((view) -> {
 //            int startPos = 0;
@@ -171,7 +155,7 @@ public class InitActivity extends BaseActivity {
                 @Override
                 public void run() {
                     try {
-                        URL url = new URL(urlClear);
+                        URL url = new URL(urlSceneList);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                         connection.setRequestMethod("POST");//设置请求方式为POST
                         connection.connect();//连接

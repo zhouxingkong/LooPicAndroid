@@ -36,10 +36,10 @@ public class BaseActivity extends AppCompatActivity {
 
     private static Activity activity;
 
-    String urlPre = "http:/192.168.43.139:8080/loopicserver/show/";
-    String urlChange = "http:/192.168.43.139:8080/changepic/";
-    String urlClear = "http:/192.168.43.139:8080/erasecache";
-    String urlRm = "http:/192.168.43.139:8080/rmpic/";
+    String urlPic = "http:/192.168.43.139:8080/loopicserver/show/";
+    String urlStoryList = "http:/192.168.43.139:8080/changepic/";
+    String urlSceneList = "http:/192.168.43.139:8080/erasecache";
+    String urlText = "http:/192.168.43.139:8080/rmpic/";
 
     public static void requestRuntimePermissions(
             String[] permissions, PermissionListener listener) {
@@ -67,10 +67,10 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        urlPre = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/loopicserver/show/";
-        urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/changepic/";
-        urlChange = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/rmpic/";
-        urlClear = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/erasecache";
+        urlPic = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/pic/";
+        urlStoryList = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/story/list/";
+        urlStoryList = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/scene/list/";
+        urlSceneList = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/text/";
 
         preloadImage(0);
         preloadImage(1);
@@ -96,7 +96,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void preloadImage(int index) {
         if (!ConfigManager.preloadMap.containsKey(index)) {
-            Uri uri = Uri.parse(urlPre + index);
+            Uri uri = Uri.parse(urlPic + index);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             ImageRequest imageRequest = ImageRequest.fromUri(uri);
             imagePipeline.prefetchToDiskCache(imageRequest, getApplicationContext());
