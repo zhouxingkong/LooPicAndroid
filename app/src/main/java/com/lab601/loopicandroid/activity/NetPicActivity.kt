@@ -30,12 +30,16 @@ class NetPicActivity : BaseActivity() {
     var changeButton: Button? = null
     var preButton: Button? = null
     var rmButton: Button? = null
+
+
     var currPage = 100
+
+
     var mediaPlayer: MediaPlayer? = null
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val startIndex = ConfigManager.instance.startIndex
+        val startIndex = ConfigManager.instance.startStory
         currPage = startIndex
         val landscape = ConfigManager.instance.isLandscape
         if (landscape) {
@@ -62,6 +66,19 @@ class NetPicActivity : BaseActivity() {
                 showPage(currPage)
             }
         }
+
+
+        photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
+        fullScreen()
+        showPage(currPage)
+    }
+
+    fun initView(){
+        initRmBtn()
+        initChangeBtn()
+    }
+
+    fun initChangeBtn(){
         changeButton = findViewById<View>(R.id.change_pic) as Button
         changeButton!!.setOnClickListener { view: View? ->
             val netThread: Thread = object : Thread() {
@@ -83,6 +100,8 @@ class NetPicActivity : BaseActivity() {
             }
             netThread.start()
         }
+    }
+    fun initRmBtn(){
         rmButton = findViewById<View>(R.id.rm_button) as Button
         rmButton!!.setOnClickListener { view: View? ->
             val netThread: Thread = object : Thread() {
@@ -104,9 +123,6 @@ class NetPicActivity : BaseActivity() {
             }
             netThread.start()
         }
-        photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
-        fullScreen()
-        showPage(currPage)
     }
 
     override fun showCurrPage() {

@@ -18,6 +18,8 @@ import android.os.Message
 import android.util.Log
 import android.view.View
 import android.widget.*
+import com.lab601.loopicandroid.tasks.GetSceneListTask
+import com.lab601.loopicandroid.tasks.GetTextTask
 import java.lang.Exception
 import java.lang.NumberFormatException
 import java.net.HttpURLConnection
@@ -31,7 +33,8 @@ class InitActivity : BaseActivity() {
     var landscapeButton: Button? = null
     var soundButton: Button? = null
     var clearCacheButton: Button? = null
-    var chapterList: ListView? = null
+    var stroyList: ListView? = null
+    var sceneList: ListView? = null
     var initPosText: TextView? = null
     var ipEdit: EditText? = null
 
@@ -68,10 +71,10 @@ class InitActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_init)
         ConfigManager.instance?.url = this.getString(R.string.ip)
-//        val getTextTask = GetTextTask(handler)
-//        getTextTask.start()
+
         statTextView = findViewById<View>(R.id.init_stat) as TextView
-        chapterList = findViewById<View>(R.id.story_list) as ListView
+        stroyList = findViewById<View>(R.id.story_list) as ListView
+        sceneList = findViewById<View>(R.id.scene_list) as ListView
 
         initPosText = findViewById<View>(R.id.start_index) as TextView
         ipEdit = findViewById<View>(R.id.server_ip) as EditText
@@ -80,7 +83,6 @@ class InitActivity : BaseActivity() {
         clearCacheButton = findViewById<View>(R.id.clear_cache) as Button
         startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
 
-        showStoryList()
 
         initView()
 
@@ -88,21 +90,8 @@ class InitActivity : BaseActivity() {
     }
 
     fun initView(){
-        startNetPicButton!!.setOnClickListener { view: View? ->
-            var ip = ""
-            try {
-                ip = ipEdit!!.text.toString()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-            if (ip.length > 5) {
-                ConfigManager.instance.url = ip
-            }
-            val intent = Intent()
-            intent.setClass(this@InitActivity, NetPicActivity::class.java)
-            startActivity(intent)
-        }
-
+        showStoryList()
+        initStartBtn()
         soundButton!!.setOnClickListener { v: View? ->    //静音按钮
             if (ConfigManager.instance.isSound) {
                 soundButton!!.text = "声音:关闭"
@@ -136,8 +125,8 @@ class InitActivity : BaseActivity() {
     }
 
     fun showStoryList(){
-        @SuppressLint("StaticFieldLeak") val getStoryListTask: GetStoryListTask =
-            object : GetStoryListTask() {
+        @SuppressLint("StaticFieldLeak")
+        val getStoryListTask: GetStoryListTask = object : GetStoryListTask() {
                 override fun showChapterList(data: List<String>) {
                     var data = data
                     data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
@@ -145,14 +134,59 @@ class InitActivity : BaseActivity() {
                     val adapter = ArrayAdapter(
                         this@InitActivity, android.R.layout.simple_list_item_1, data
                     )
-                    chapterList!!.adapter = adapter
+                    stroyList!!.adapter = adapter
                 }
             }
         getStoryListTask.execute()
 
-        chapterList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            ConfigManager.instance.startIndex = position
-            initPosText!!.text = "起始位置:$position"
+        stroyList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            ConfigManager.instance.startStory = position
+            initPosText!!.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
+
+            showSceneList(position)
+            initTextData(position)
+        }
+    }
+
+    fun showSceneList(scene:Int){
+        @SuppressLint("StaticFieldLeak")
+        val getSceneTask = object: GetSceneListTask(scene){
+            override fun showChapterList(data: List<String>) {
+                var data = data
+                data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
+                    .collect(Collectors.toList())
+                val adapter = ArrayAdapter(
+                    this@InitActivity, android.R.layout.simple_list_item_1, data
+                )
+                sceneList!!.adapter = adapter
+            }
+        }
+        getSceneTask.execute()
+        sceneList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            ConfigManager.instance.startScene = position
+            initPosText!!.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
+        }
+    }
+
+    fun initTextData(storyId:Int){
+        val getTextTask = GetTextTask(handler,storyId)
+        getTextTask.start()
+    }
+
+    fun initStartBtn(){
+        startNetPicButton!!.setOnClickListener { view: View? ->
+            var ip = ""
+            try {
+                ip = ipEdit!!.text.toString()
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
+            }
+            if (ip.length > 5) {
+                ConfigManager.instance.url = ip
+            }
+            val intent = Intent()
+            intent.setClass(this@InitActivity, NetPicActivity::class.java)
+            startActivity(intent)
         }
     }
 

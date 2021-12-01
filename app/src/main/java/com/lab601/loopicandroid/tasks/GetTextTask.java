@@ -14,14 +14,16 @@ import java.util.List;
 public class GetTextTask extends Thread {
     private String getTextUrl = "http:/192.168.43.139:8080/text/xingkong1313113";
     private Handler handler;
+    private int storyId;
 
-    public GetTextTask(Handler handler) {
+    public GetTextTask(Handler handler,int storyId) {
         this.handler = handler;
+        this.storyId = storyId;
     }
 
     @Override
     public void run() {
-        getTextUrl = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/text/xingkong1313113";
+        getTextUrl = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/text/"+storyId;
 
         try {
             URL url = new URL(getTextUrl);

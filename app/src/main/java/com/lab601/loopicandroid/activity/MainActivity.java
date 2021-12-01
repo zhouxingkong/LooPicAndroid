@@ -36,7 +36,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int startIndex = ConfigManager.getInstance().getStartIndex();
+        int startIndex = ConfigManager.getInstance().getStartStory();
         currPage = startIndex;
 
         boolean landscape = ConfigManager.getInstance().isLandscape();

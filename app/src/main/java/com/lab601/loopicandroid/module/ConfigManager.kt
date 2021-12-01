@@ -5,7 +5,8 @@ import java.util.*
 class ConfigManager private constructor() {
     var isLandscape = true //横屏
     var isSound = false //静音
-    var startIndex = 0
+    var startStory = 0
+    var startScene = 0
     var text: List<String>? = null
     var url = ""
 

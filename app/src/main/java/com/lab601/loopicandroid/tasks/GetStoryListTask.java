@@ -29,7 +29,7 @@ public class GetStoryListTask extends AsyncTask {
     @Override
     protected Object doInBackground(Object[] objects) {
 
-        getChapterUrl = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/text/chapterList";
+        getChapterUrl = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/story/list";
 
         try {
             URL url = new URL(getChapterUrl);
