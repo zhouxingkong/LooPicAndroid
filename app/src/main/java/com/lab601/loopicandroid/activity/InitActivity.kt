@@ -32,6 +32,7 @@ class InitActivity : BaseActivity() {
     var statTextView: TextView? = null
     var landscapeButton: Button? = null
     var soundButton: Button? = null
+    var refreshButton: Button? = null
     var clearCacheButton: Button? = null
     var stroyList: ListView? = null
     var sceneList: ListView? = null
@@ -82,7 +83,14 @@ class InitActivity : BaseActivity() {
         landscapeButton = findViewById<View>(R.id.landscape_on) as Button
         clearCacheButton = findViewById<View>(R.id.clear_cache) as Button
         startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
+        refreshButton = findViewById<View>(R.id.refresh) as Button
+        refreshButton?.setOnClickListener {
+            ConfigManager.instance.url = ipEdit!!.text.toString()
 
+            showStoryList()
+            showSceneList(ConfigManager.instance.startStory)
+            initTextData(ConfigManager.instance.startStory)
+        }
 
         initView()
 
@@ -123,6 +131,7 @@ class InitActivity : BaseActivity() {
         initClearCache()
 
     }
+
 
     fun showStoryList(){
         @SuppressLint("StaticFieldLeak")

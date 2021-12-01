@@ -18,6 +18,7 @@ import android.os.Handler
 import android.os.Message
 import android.util.Log
 import android.view.View
+import com.lab601.loopicandroid.R
 import java.util.ArrayList
 
 open class BaseActivity : AppCompatActivity() {
@@ -29,14 +30,18 @@ open class BaseActivity : AppCompatActivity() {
     /*-----------申请权限---------------*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        urlPic = "http:/" + ConfigManager.instance?.url + ":8080/pic/"
-        urlStoryList = "http:/" + ConfigManager.instance?.url + ":8080/story/list/"
-        urlStoryList = "http:/" + ConfigManager.instance?.url + ":8080/scene/list/"
-        urlSceneList = "http:/" + ConfigManager.instance?.url + ":8080/text/"
+        initIpAddress()
         preloadImage(0)
         preloadImage(1)
         preloadImage(2)
         activity = this
+    }
+
+    fun initIpAddress(){
+        urlPic = "http:/" + ConfigManager.instance?.url + ":8080/pic/"
+        urlStoryList = "http:/" + ConfigManager.instance?.url + ":8080/story/list/"
+        urlStoryList = "http:/" + ConfigManager.instance?.url + ":8080/scene/list/"
+        urlSceneList = "http:/" + ConfigManager.instance?.url + ":8080/text/"
     }
 
     @SuppressLint("HandlerLeak")
