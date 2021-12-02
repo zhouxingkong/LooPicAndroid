@@ -31,7 +31,7 @@ public class GetSceneListTask  extends AsyncTask {
     @Override
     protected Object doInBackground(Object[] objects) {
 
-        getChapterUrl = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/scene/list"+sceneId;
+        getChapterUrl = "http:/" + ConfigManager.getInstance().getUrl() + ":8080/scene/list/"+sceneId;
 
         try {
             URL url = new URL(getChapterUrl);
