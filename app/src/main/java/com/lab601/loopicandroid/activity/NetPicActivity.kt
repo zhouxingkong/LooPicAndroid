@@ -33,7 +33,7 @@ class NetPicActivity : BaseActivity() {
 
 
     var currScene = 100
-    var currSer = 0
+    var serMap = mutableMapOf<Int,Int>()
 
 
     var mediaPlayer: MediaPlayer? = null
@@ -58,13 +58,13 @@ class NetPicActivity : BaseActivity() {
 //        textView.setTypeface(typeface);
         textView!!.setOnClickListener { view: View? ->  //下一张图
             currScene++
-            showPage(currScene,currSer)
+            showPage(currScene)
         }
         initView()
 
         photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
         fullScreen()
-        showPage(currScene,currSer)
+        showPage(currScene)
     }
 
     fun initView(){
@@ -78,7 +78,7 @@ class NetPicActivity : BaseActivity() {
         preButton!!.setOnClickListener { view: View? ->    //上一张图
             if (currScene > 0) {
                 currScene--
-                showPage(currScene,currSer)
+                showPage(currScene)
             }
         }
     }
@@ -86,8 +86,8 @@ class NetPicActivity : BaseActivity() {
     fun initChangeBtn(){
         changeButton = findViewById<View>(R.id.change_pic) as Button
         changeButton!!.setOnClickListener { view: View? ->
-            currSer++
-            showPage(currScene,currSer)
+            incAndGetSer(currScene)
+            showPage(currScene)
         }
     }
     fun initRmBtn(){
@@ -119,10 +119,11 @@ class NetPicActivity : BaseActivity() {
         //        imagePipeline.clearCaches();
         val uri = Uri.parse(urlPic + currScene)
         imagePipeline.evictFromCache(uri)
-        showPage(currScene,currSer)
+        showPage(currScene)
     }
 
-    fun showPage(sceneIndex: Int,serIndex:Int) {
+    fun showPage(sceneIndex: Int) {
+        val serIndex = getSer(sceneIndex)
         /*渐进加载图片，然而并没有什么卵用*/
         val uri = Uri.parse("${urlPic}${ConfigManager.instance.startStory}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
@@ -139,6 +140,17 @@ class NetPicActivity : BaseActivity() {
         //预加载
         preloadImage(currScene + 1)
         preloadImage(currScene + 2)
+    }
+
+    fun getSer(sceneIndex:Int):Int{
+        return if(serMap.containsKey(sceneIndex)) serMap[sceneIndex]!!
+        else 0
+    }
+
+    fun incAndGetSer(sceneIndex:Int):Int{
+        val ser = getSer(sceneIndex)+1
+        serMap[sceneIndex] = ser
+        return ser
     }
 
     /**
