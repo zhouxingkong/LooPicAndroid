@@ -93,24 +93,25 @@ class NetPicActivity : BaseActivity() {
     fun initRmBtn(){
         rmButton = findViewById<View>(R.id.rm_button) as Button
         rmButton!!.setOnClickListener { view: View? ->
-            val netThread: Thread = object : Thread() {
-                override fun run() {
-                    try {
-                        val urlStr = urlText + currScene
-                        val url = URL(urlStr)
-                        val connection = url.openConnection() as HttpURLConnection
-                        connection.requestMethod = "POST" //设置请求方式为POST
-                        connection.connect() //连接
-                        val responseCode = connection.responseCode
-                        if (responseCode == 200) {
-                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_SHOW_PIC)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            netThread.start()
+//            val netThread: Thread = object : Thread() {
+//                override fun run() {
+//                    try {
+//                        val urlStr = urlText + currScene
+//                        val url = URL(urlStr)
+//                        val connection = url.openConnection() as HttpURLConnection
+//                        connection.requestMethod = "POST" //设置请求方式为POST
+//                        connection.connect() //连接
+//                        val responseCode = connection.responseCode
+//                        if (responseCode == 200) {
+//                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_SHOW_PIC)
+//                        }
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+//            netThread.start()
+            finish()
         }
     }
 
