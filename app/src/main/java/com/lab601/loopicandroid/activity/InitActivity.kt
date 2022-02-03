@@ -7,10 +7,10 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import android.os.Build
 import com.lab601.loopicandroid.listener.PermissionListener
 import com.lab601.loopicandroid.R
-import com.lab601.loopicandroid.tasks.GetStoryListTask
 import com.lab601.loopicandroid.module.EncodeHelper
 import android.widget.AdapterView.OnItemClickListener
 import android.content.Intent
+import android.graphics.Bitmap
 import com.lab601.loopicandroid.module.SourceManager
 import com.lab601.loopicandroid.module.InitialCallback
 import android.os.Handler
@@ -18,8 +18,12 @@ import android.os.Message
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.lab601.loopicandroid.tasks.GetSceneListTask
 import com.lab601.loopicandroid.tasks.GetTextTask
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
+import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
 import java.lang.NumberFormatException
 import java.net.HttpURLConnection
@@ -71,7 +75,7 @@ class InitActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_init)
-        ConfigManager.instance?.url = this.getString(R.string.ip)
+        ConfigManager.instance.initNetwork(this.getString(R.string.ip))
 
         statTextView = findViewById<View>(R.id.init_stat) as TextView
         stroyList = findViewById<View>(R.id.story_list) as ListView
@@ -85,7 +89,7 @@ class InitActivity : BaseActivity() {
         startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
         refreshButton = findViewById<View>(R.id.refresh) as Button
         refreshButton?.setOnClickListener {
-            ConfigManager.instance.url = ipEdit!!.text.toString()
+            ConfigManager.instance.initNetwork(ipEdit!!.text.toString())
 
             showStoryList()
             showSceneList(ConfigManager.instance.startStory)
@@ -134,19 +138,29 @@ class InitActivity : BaseActivity() {
 
 
     fun showStoryList(){
-        @SuppressLint("StaticFieldLeak")
-        val getStoryListTask: GetStoryListTask = object : GetStoryListTask() {
-                override fun showChapterList(data: List<String>) {
-                    var data = data
+        val data1 = ConfigManager.instance.service.getAllSceneList()
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .subscribe ({
+                    ConfigManager.instance.allSceneList = it
+                },{
+                    Log.e("xingkong","${it}")
+                })
+
+        val data2 = ConfigManager.instance.service.getStoryList()
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .subscribe ({
+                    var data = it
                     data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
-                        .collect(Collectors.toList())
+                            .collect(Collectors.toList())
                     val adapter = ArrayAdapter(
-                        this@InitActivity, android.R.layout.simple_list_item_1, data
+                            this@InitActivity, android.R.layout.simple_list_item_1, data
                     )
                     stroyList!!.adapter = adapter
-                }
-            }
-        getStoryListTask.execute()
+                },{
+                    Log.e("xingkong","${it}")
+                })
 
         stroyList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             ConfigManager.instance.startStory = position
@@ -158,20 +172,33 @@ class InitActivity : BaseActivity() {
     }
 
     fun showSceneList(scene:Int){
-        @SuppressLint("StaticFieldLeak")
-        val getSceneTask = object: GetSceneListTask(scene){
-            override fun showChapterList(data: List<String>) {
-                var data = data
-                data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
-                    .collect(Collectors.toList())
-                ConfigManager.instance.currSceneList = data //传入Scene到配置
-                val adapter = ArrayAdapter(
-                    this@InitActivity, android.R.layout.simple_list_item_1, data
-                )
-                sceneList!!.adapter = adapter
-            }
-        }
-        getSceneTask.execute()
+//        @SuppressLint("StaticFieldLeak")
+//        val getSceneTask = object: GetSceneListTask(scene){
+//            override fun showChapterList(data: List<String>) {
+//
+//            }
+//        }
+//        getSceneTask.execute()
+
+        ConfigManager.instance.service.getSceneList(scene)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({
+                    Log.d("xingkong","scene=${it}")
+
+                    var data = it
+                    data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
+                            .collect(Collectors.toList())
+                    ConfigManager.instance.currSceneList = data //传入Scene到配置
+                    val adapter = ArrayAdapter(
+                            this@InitActivity, android.R.layout.simple_list_item_1, data
+                    )
+                    sceneList!!.adapter = adapter
+                },{
+                    Log.e("xingkong","${it}")
+                })
+
+
         sceneList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             ConfigManager.instance.startScene = position
             initPosText!!.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
@@ -192,7 +219,8 @@ class InitActivity : BaseActivity() {
                 e.printStackTrace()
             }
             if (ip.length > 5) {
-                ConfigManager.instance.url = ip
+//                ConfigManager.instance.url = ip
+                ConfigManager.instance.initNetwork(ip)
             }
             val intent = Intent()
             intent.setClass(this@InitActivity, NetPicActivity::class.java)
