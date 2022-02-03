@@ -18,10 +18,6 @@ import android.view.View
 import android.widget.*
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.*
 
 class NetPicActivity : BaseActivity() {
     var MAX_SIZE = 2000000.0
@@ -30,8 +26,10 @@ class NetPicActivity : BaseActivity() {
     var changeButton: Button? = null
     var preButton: Button? = null
     var rmButton: Button? = null
+    var sceneListUI: ListView? = null
+    var showSceneList = false
 
-
+    var sceneList :List<String>? = null
     var currScene = 100
     var serMap = mutableMapOf<Int,Int>()
 
@@ -40,7 +38,7 @@ class NetPicActivity : BaseActivity() {
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val startIndex = ConfigManager.instance.startStory
+        val startIndex = ConfigManager.instance.startScene
         currScene = startIndex
         val landscape = ConfigManager.instance.isLandscape
         if (landscape) {
@@ -51,6 +49,22 @@ class NetPicActivity : BaseActivity() {
             setContentView(R.layout.activity_main_vertical)
         }
 
+        initView()
+
+        photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
+        fullScreen()
+        showPage(currScene)
+    }
+
+    fun initView(){
+        initText()
+        initPreBtn()
+        initRmBtn()
+        initChangeBtn()
+        initSceneList()
+    }
+
+    fun initText(){
         /*初始化view*/textView = findViewById<View>(R.id.loo_text) as TextView
         /*设置文本字体*/
 //        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/loo_font1.ttf");  // mContext为上下文
@@ -60,17 +74,23 @@ class NetPicActivity : BaseActivity() {
             currScene++
             showPage(currScene)
         }
-        initView()
-
-        photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
-        fullScreen()
-        showPage(currScene)
+        if(showSceneList) textView?.visibility = View.GONE
     }
 
-    fun initView(){
-        initPreBtn()
-        initRmBtn()
-        initChangeBtn()
+    fun initSceneList(){
+        sceneList = ConfigManager.instance.currSceneList
+        sceneListUI = findViewById<View>(R.id.index_list) as ListView
+
+        val adapter = ArrayAdapter(
+                this@NetPicActivity, android.R.layout.simple_list_item_1, sceneList
+        )
+        sceneListUI!!.adapter = adapter
+
+        sceneListUI!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            incAndGetSer(position)
+            showPage(position)
+        }
+        if(!showSceneList) sceneListUI?.visibility = View.GONE
     }
 
     fun initPreBtn(){
@@ -93,25 +113,16 @@ class NetPicActivity : BaseActivity() {
     fun initRmBtn(){
         rmButton = findViewById<View>(R.id.rm_button) as Button
         rmButton!!.setOnClickListener { view: View? ->
-//            val netThread: Thread = object : Thread() {
-//                override fun run() {
-//                    try {
-//                        val urlStr = urlText + currScene
-//                        val url = URL(urlStr)
-//                        val connection = url.openConnection() as HttpURLConnection
-//                        connection.requestMethod = "POST" //设置请求方式为POST
-//                        connection.connect() //连接
-//                        val responseCode = connection.responseCode
-//                        if (responseCode == 200) {
-//                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_SHOW_PIC)
-//                        }
-//                    } catch (e: Exception) {
-//                        e.printStackTrace()
-//                    }
-//                }
-//            }
-//            netThread.start()
-            finish()
+            if(showSceneList){
+                sceneListUI?.visibility = View.GONE
+                textView?.visibility = View.VISIBLE
+                showSceneList = false
+            }
+            else{
+                sceneListUI?.visibility = View.VISIBLE
+                textView?.visibility = View.GONE
+                showSceneList = true
+            }
         }
     }
 

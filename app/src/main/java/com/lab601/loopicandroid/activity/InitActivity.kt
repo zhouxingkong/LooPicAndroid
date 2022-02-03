@@ -164,6 +164,7 @@ class InitActivity : BaseActivity() {
                 var data = data
                 data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
                     .collect(Collectors.toList())
+                ConfigManager.instance.currSceneList = data //传入Scene到配置
                 val adapter = ArrayAdapter(
                     this@InitActivity, android.R.layout.simple_list_item_1, data
                 )

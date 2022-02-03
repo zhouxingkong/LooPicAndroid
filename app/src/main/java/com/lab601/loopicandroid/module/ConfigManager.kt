@@ -8,6 +8,7 @@ class ConfigManager private constructor() {
     var startStory = 0
     var startScene = 0
     var text: List<String>? = null
+    var currSceneList:List<String>? = null  //当前选中的Scene列表
     var url = ""
 
 
