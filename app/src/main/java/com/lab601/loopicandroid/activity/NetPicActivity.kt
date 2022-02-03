@@ -16,6 +16,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.*
+import kotlinx.android.synthetic.main.activity_netpic_landscape.*
 import java.io.File
 import java.io.IOException
 
@@ -29,9 +30,19 @@ class NetPicActivity : BaseActivity() {
     var sceneListUI: ListView? = null
     var showSceneList = false
 
+    var story1: TextView? = null
+    var story2: TextView? = null
+    var story3: TextView? = null
+    var story4: TextView? = null
+    var story5: TextView? = null
+    var story6: TextView? = null
+
     var sceneList :List<String>? = null
+    var currStory = 0
     var currScene = 100
+
     var serMap = mutableMapOf<Int,Int>()
+    var indexMap = mutableMapOf<Int,MutableMap<Int,Int>>()
 
 
     var mediaPlayer: MediaPlayer? = null
@@ -61,6 +72,7 @@ class NetPicActivity : BaseActivity() {
         initPreBtn()
         initRmBtn()
         initChangeBtn()
+        initStoryList()
         initSceneList()
     }
 
@@ -77,6 +89,39 @@ class NetPicActivity : BaseActivity() {
         if(showSceneList) textView?.visibility = View.GONE
     }
 
+    fun initStoryList(){
+        if(ConfigManager.instance.allSceneList!!.size<2) story_2?.visibility = View.GONE
+        if(ConfigManager.instance.allSceneList!!.size<3) story_3?.visibility = View.GONE
+        if(ConfigManager.instance.allSceneList!!.size<4) story_4?.visibility = View.GONE
+        if(ConfigManager.instance.allSceneList!!.size<5) story_5?.visibility = View.GONE
+        if(ConfigManager.instance.allSceneList!!.size<6) story_6?.visibility = View.GONE
+
+        story_1?.setOnClickListener {
+            currStory = 0
+            doShowSceneList(currStory)
+        }
+        story_2?.setOnClickListener {
+            currStory = 1
+            doShowSceneList(currStory)
+        }
+        story_3?.setOnClickListener {
+            currStory = 2
+            doShowSceneList(currStory)
+        }
+        story_4?.setOnClickListener {
+            currStory = 3
+            doShowSceneList(currStory)
+        }
+        story_5?.setOnClickListener {
+            currStory = 4
+            doShowSceneList(currStory)
+        }
+        story_6?.setOnClickListener {
+            currStory = 5
+            doShowSceneList(currStory)
+        }
+    }
+
     fun initSceneList(){
         sceneList = ConfigManager.instance.currSceneList
         sceneListUI = findViewById<View>(R.id.index_list) as ListView
@@ -87,10 +132,24 @@ class NetPicActivity : BaseActivity() {
         sceneListUI!!.adapter = adapter
 
         sceneListUI!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            incAndGetSer(position)
-            showPage(position)
+//            incAndGetSer(serMap,position)
+            incAndGetIndex(currStory,position)
+            showPage(position,currStory)
         }
         if(!showSceneList) sceneListUI?.visibility = View.GONE
+    }
+
+    fun doShowSceneList(storyIndex:Int){
+        val l = ConfigManager.instance.allSceneList!![storyIndex]
+        val adapter = ArrayAdapter(
+                this@NetPicActivity, android.R.layout.simple_list_item_1, l
+        )
+        sceneListUI!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+//            incAndGetSer(serMap,position)
+            val ser = incAndGetIndex(currStory,position)
+            showPage(position,currStory,ser)
+        }
+        sceneListUI!!.adapter = adapter
     }
 
     fun initPreBtn(){
@@ -106,7 +165,7 @@ class NetPicActivity : BaseActivity() {
     fun initChangeBtn(){
         changeButton = findViewById<View>(R.id.change_pic) as Button
         changeButton!!.setOnClickListener { view: View? ->
-            incAndGetSer(currScene)
+            incAndGetSer(serMap,currScene)
             showPage(currScene)
         }
     }
@@ -116,11 +175,15 @@ class NetPicActivity : BaseActivity() {
             if(showSceneList){
                 sceneListUI?.visibility = View.GONE
                 textView?.visibility = View.VISIBLE
+                loo_bottom_container?.visibility = View.VISIBLE
+                story_index_container?.visibility = View.GONE
                 showSceneList = false
             }
             else{
                 sceneListUI?.visibility = View.VISIBLE
+                story_index_container?.visibility = View.VISIBLE
                 textView?.visibility = View.GONE
+                loo_bottom_container?.visibility = View.GONE
                 showSceneList = true
             }
         }
@@ -134,10 +197,12 @@ class NetPicActivity : BaseActivity() {
         showPage(currScene)
     }
 
-    fun showPage(sceneIndex: Int) {
-        val serIndex = getSer(sceneIndex)
+    fun showPage(sceneIndex: Int,storyIndex:Int = -1,serIndex:Int = -1) {
+
+        val serIndex = if(serIndex<0) getSer(sceneIndex) else serIndex
         /*渐进加载图片，然而并没有什么卵用*/
-        val uri = Uri.parse("${urlPic}${ConfigManager.instance.startStory}/${sceneIndex}/${serIndex}")
+        val uri = Uri.parse("${urlPic}${if(storyIndex<0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
+        Log.d("xingkong","uri=${urlPic}${if(storyIndex<0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
             .setProgressiveRenderingEnabled(true)
             .build()
@@ -159,9 +224,22 @@ class NetPicActivity : BaseActivity() {
         else 0
     }
 
-    fun incAndGetSer(sceneIndex:Int):Int{
-        val ser = getSer(sceneIndex)+1
-        serMap[sceneIndex] = ser
+    fun incAndGetIndex(storyIndex:Int,sceneIndex:Int):Int{
+        if(!indexMap.containsKey(storyIndex)){
+            indexMap.put(storyIndex,mutableMapOf<Int,Int>())
+            Log.d("xingkong","1")
+            return 0
+        }
+        val map = indexMap[storyIndex]!!
+        return incAndGetSer(map,sceneIndex)
+    }
+
+    fun incAndGetSer(map:MutableMap<Int,Int>,sceneIndex:Int):Int{
+        val ser = if(map.containsKey(sceneIndex)) map[sceneIndex]!! + 1
+            else 1
+        Log.d("xingkong","ser=${ser}")
+
+        map.put(sceneIndex,ser)
         return ser
     }
 

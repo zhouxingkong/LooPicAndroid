@@ -148,7 +148,7 @@ class InitActivity : BaseActivity() {
                 })
 
         val data2 = ConfigManager.instance.service.getStoryList()
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe ({
                     var data = it
