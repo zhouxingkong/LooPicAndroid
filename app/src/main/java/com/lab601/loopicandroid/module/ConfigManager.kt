@@ -15,6 +15,7 @@ class ConfigManager private constructor() {
     var text: List<String>? = null
     var currSceneList:List<String>? = null  //当前选中的Scene列表
 
+    var storyList:List<String>? = null
     var allSceneList:List<List<String>>? = null
 
     var url = ""

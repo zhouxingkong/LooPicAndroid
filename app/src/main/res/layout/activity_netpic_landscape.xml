@@ -43,54 +43,131 @@
 
             <LinearLayout
                 android:id="@+id/story_index_container"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="20dp">
-                <TextView
-                    android:id="@+id/story_1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="#40ff0000"/>
-                <TextView
-                    android:id="@+id/story_2"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="#4000ff00"/>
-                <TextView
-                    android:id="@+id/story_3"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="#400000ff"/>
-                <TextView
-                    android:id="@+id/story_4"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="#40ffff00"/>
-                <TextView
-                    android:id="@+id/story_5"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="#40ff00ff"/>
-                <TextView
-                    android:id="@+id/story_6"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:background="#4000ffff"/>
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:id="@+id/storyContainer1"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0">
+                    <TextView
+                        android:id="@+id/story_1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:background="#40ff0000"/>
+
+                    <ListView
+                        android:id="@+id/index_list1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.0"
+                        android:background="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/storyContainer2"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0">
+                    <TextView
+                        android:id="@+id/story_2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:background="#4000ff00"/>
+
+                    <ListView
+                        android:id="@+id/index_list2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.0"
+                        android:background="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/storyContainer3"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0">
+                    <TextView
+                        android:id="@+id/story_3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:background="#400000ff"/>
+
+                    <ListView
+                        android:id="@+id/index_list3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.0"
+                        android:background="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/storyContainer4"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0">
+                    <TextView
+                        android:id="@+id/story_4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:background="#40ffff00"/>
+
+                    <ListView
+                        android:id="@+id/index_list4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.0"
+                        android:background="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/storyContainer5"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0">
+                    <TextView
+                        android:id="@+id/story_5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:background="#4000ffff"/>
+
+                    <ListView
+                        android:id="@+id/index_list5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.0"
+                        android:background="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/storyContainer6"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.0">
+                    <TextView
+                        android:id="@+id/story_6"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:background="#40ff00ff"/>
+
+                    <ListView
+                        android:id="@+id/index_list6"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.0"
+                        android:background="@color/black"/>
+                </LinearLayout>
 
             </LinearLayout>
-
-            <ListView
-                android:id="@+id/index_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.0"
-                android:background="@color/black"/>
 
         </LinearLayout>
 

@@ -152,8 +152,13 @@ class InitActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe ({
                     var data = it
-                    data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
+                    data = data.stream().map {
+                        it.substring(it.lastIndexOf("\\")+1,it.indexOf("."))
+                    }.map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
                             .collect(Collectors.toList())
+
+                    ConfigManager.instance.storyList = data
+
                     val adapter = ArrayAdapter(
                             this@InitActivity, android.R.layout.simple_list_item_1, data
                     )
