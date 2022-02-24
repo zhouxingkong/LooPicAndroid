@@ -32,14 +32,6 @@ class NetPicActivity : BaseActivity() {
     var sceneListUI: ListView? = null
     var showSceneList = false
 
-    var story1: TextView? = null
-    var story2: TextView? = null
-    var story3: TextView? = null
-    var story4: TextView? = null
-    var story5: TextView? = null
-    var story6: TextView? = null
-
-    var sceneList :List<String>? = null
     var currStory = 0
     var currScene = 100
 
@@ -48,6 +40,10 @@ class NetPicActivity : BaseActivity() {
 
     val WEIGHT_FOCUS = 4.0f
     val WEIGHT_NORMAL = 1.0f
+
+    val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
+    val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
+    val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
 
     var mediaPlayer: MediaPlayer? = null
     @SuppressLint("ResourceAsColor")
@@ -95,121 +91,32 @@ class NetPicActivity : BaseActivity() {
 
     var storySelect = -1
     fun initStoryList(){
-        if(ConfigManager.instance.allSceneList!!.size<1) storyContainer1?.visibility = View.GONE else story_1?.text = ConfigManager.instance.storyList!![0]
-        if(ConfigManager.instance.allSceneList!!.size<2) storyContainer2?.visibility = View.GONE else story_2?.text = ConfigManager.instance.storyList!![1]
-        if(ConfigManager.instance.allSceneList!!.size<3) storyContainer3?.visibility = View.GONE else story_3?.text = ConfigManager.instance.storyList!![2]
-        if(ConfigManager.instance.allSceneList!!.size<4) storyContainer4?.visibility = View.GONE else story_4?.text = ConfigManager.instance.storyList!![3]
-        if(ConfigManager.instance.allSceneList!!.size<5) storyContainer5?.visibility = View.GONE else story_5?.text = ConfigManager.instance.storyList!![4]
-        if(ConfigManager.instance.allSceneList!!.size<6) storyContainer6?.visibility = View.GONE else story_6?.text = ConfigManager.instance.storyList!![5]
-        story_1?.setOnClickListener {
-            storyContainer1?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, if(storySelect==0) WEIGHT_NORMAL else WEIGHT_FOCUS))
-            storyContainer2?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer3?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer4?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer5?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer6?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storySelect = if(storySelect==0) -1 else 0
-        }
-        story_2?.setOnClickListener {
-            storyContainer1?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer2?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, if(storySelect==1) WEIGHT_NORMAL else WEIGHT_FOCUS))
-            storyContainer3?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer4?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer5?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer6?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storySelect = if(storySelect==1) -1 else 1
-        }
-        story_3?.setOnClickListener {
-            storyContainer1?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer2?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer3?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, if(storySelect==2) WEIGHT_NORMAL else WEIGHT_FOCUS))
-            storyContainer4?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer5?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer6?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storySelect = if(storySelect==2) -1 else 2
-        }
-        story_4?.setOnClickListener {
-            storyContainer1?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer2?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer3?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer4?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, if(storySelect==3) WEIGHT_NORMAL else WEIGHT_FOCUS))
-            storyContainer5?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer6?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storySelect = if(storySelect==3) -1 else 3
-        }
-        story_5?.setOnClickListener {
-            storyContainer1?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer2?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer3?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer4?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer5?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, if(storySelect==4) WEIGHT_NORMAL else WEIGHT_FOCUS))
-            storyContainer6?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storySelect = if(storySelect==4) -1 else 4
-        }
-        story_6?.setOnClickListener {
-            storyContainer1?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer2?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer3?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer4?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer5?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, WEIGHT_NORMAL))
-            storyContainer6?.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, if(storySelect==5) WEIGHT_NORMAL else WEIGHT_FOCUS))
-            storySelect = if(storySelect==5) -1 else 5
+        storyIndexTab.forEachIndexed { index, view ->
+            if(ConfigManager.instance.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
+            else storyIndexTab[index]?.text = ConfigManager.instance.storyList!![0]
+            storyIndexTab[index]?.setOnClickListener {
+                storyContainerList.forEachIndexed { i, linearLayout ->
+                    linearLayout?.setLayoutParams(
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            0,
+                            if(i!=index || storySelect==index) WEIGHT_NORMAL else WEIGHT_FOCUS))
+                }
+                storySelect = if(storySelect==index) -1 else index
+            }
         }
     }
 
     fun initSceneList(){
-        if(ConfigManager.instance.allSceneList!!.size>0){
-            val listItems = ConfigManager.instance.allSceneList!![0]
-            val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
-            index_list1?.adapter = adapter
-            index_list1?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                incAndGetIndex(0, position)
-                showPage(position, 0)
-            }
-        }
-        if(ConfigManager.instance.allSceneList!!.size>1){
-            val listItems = ConfigManager.instance.allSceneList!![1]
-            val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
-            index_list2?.adapter = adapter
-            index_list2?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                incAndGetIndex(1, position)
-                showPage(position, 1)
-            }
-        }
-        if(ConfigManager.instance.allSceneList!!.size>2){
-            val listItems = ConfigManager.instance.allSceneList!![2]
-            val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
-            index_list3?.adapter = adapter
-            index_list3?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                incAndGetIndex(2, position)
-                showPage(position, 2)
-            }
-        }
-        if(ConfigManager.instance.allSceneList!!.size>3){
-            val listItems = ConfigManager.instance.allSceneList!![3]
-            val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
-            index_list4?.adapter = adapter
-            index_list4?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                incAndGetIndex(3, position)
-                showPage(position, 3)
-            }
-        }
-        if(ConfigManager.instance.allSceneList!!.size>4){
-            val listItems = ConfigManager.instance.allSceneList!![4]
-            val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
-            index_list5?.adapter = adapter
-            index_list5?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                incAndGetIndex(4, position)
-                showPage(position, 4)
-            }
-        }
-        if(ConfigManager.instance.allSceneList!!.size>5){
-            val listItems = ConfigManager.instance.allSceneList!![5]
-            val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
-            index_list6?.adapter = adapter
-            index_list6?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                incAndGetIndex(5, position)
-                showPage(position, 5)
+        sceneIndexList.forEachIndexed { index, listView ->
+            if(ConfigManager.instance.allSceneList!!.size > index){
+                val listItems = ConfigManager.instance.allSceneList!![index]
+                val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
+                listView?.adapter = adapter
+                listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                    incAndGetIndex(index, position)
+                    showPage(position, index)
+                }
             }
         }
 
@@ -282,7 +189,7 @@ class NetPicActivity : BaseActivity() {
         val serIndex = if(serIndex<0) getSer(sceneIndex) else serIndex
         /*渐进加载图片，然而并没有什么卵用*/
         val uri = Uri.parse("${urlPic}${if (storyIndex < 0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
-        Log.d("xingkong", "uri=${urlPic}${if (storyIndex < 0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
+//        Log.d("xingkong", "uri=${urlPic}${if (storyIndex < 0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
             .setProgressiveRenderingEnabled(true)
             .build()
@@ -307,7 +214,6 @@ class NetPicActivity : BaseActivity() {
     fun incAndGetIndex(storyIndex: Int, sceneIndex: Int):Int{
         if(!indexMap.containsKey(storyIndex)){
             indexMap.put(storyIndex, mutableMapOf<Int, Int>())
-            Log.d("xingkong", "1")
             return 0
         }
         val map = indexMap[storyIndex]!!
@@ -317,7 +223,6 @@ class NetPicActivity : BaseActivity() {
     fun incAndGetSer(map: MutableMap<Int, Int>, sceneIndex: Int):Int{
         val ser = if(map.containsKey(sceneIndex)) map[sceneIndex]!! + 1
             else 1
-        Log.d("xingkong", "ser=${ser}")
 
         map.put(sceneIndex, ser)
         return ser
@@ -327,7 +232,6 @@ class NetPicActivity : BaseActivity() {
      * @param index
      */
     fun onPageChanged(index: Int) {
-        Log.d("xingkong", "浏览索引:$index")
         if (ConfigManager.instance.isSound) {
             val displayMenu = SourceManager.instance.displayMenus?.get(index)
             val soundFiles = displayMenu?.soundList
@@ -391,7 +295,6 @@ class NetPicActivity : BaseActivity() {
             if (path.size > index + 1) {
                 /*播放完成回调函数*/
                 mediaPlayer!!.setOnCompletionListener { mp: MediaPlayer? ->
-                    Log.d("xingkong", "playSound: 音频播放完毕")
                     playSound(path, index + 1)
                 }
             }
