@@ -17,4 +17,7 @@ interface LooService {
     @GET("scene/list/{sceneId}")
     fun getSceneList(@Path("sceneId") sceneId:Int):Single<List<String>>
 
+    @GET("text/{storyId}")
+    fun getStoryText(@Path("storyId") storyId:Int):Single<List<String>>
+
 }

@@ -10,7 +10,6 @@ import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.EncodeHelper
 import android.widget.AdapterView.OnItemClickListener
 import android.content.Intent
-import android.graphics.Bitmap
 import com.lab601.loopicandroid.module.SourceManager
 import com.lab601.loopicandroid.module.InitialCallback
 import android.os.Handler
@@ -18,11 +17,7 @@ import android.os.Message
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.lab601.loopicandroid.tasks.GetTextTask
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
 import java.lang.NumberFormatException
@@ -211,8 +206,14 @@ class InitActivity : BaseActivity() {
     }
 
     fun initTextData(storyId:Int){
-        val getTextTask = GetTextTask(handler,storyId)
-        getTextTask.start()
+        ConfigManager.instance.service.getStoryText(storyId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({
+                ConfigManager.instance.text = it
+            },{
+                Log.e("xingkong","${it}")
+            })
     }
 
     fun initStartBtn(){
