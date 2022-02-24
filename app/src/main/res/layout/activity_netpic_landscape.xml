@@ -203,6 +203,12 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
+        <ListView
+            android:id="@+id/soundList"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/black"/>
+
     </LinearLayout>
 
 

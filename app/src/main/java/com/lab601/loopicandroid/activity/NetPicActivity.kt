@@ -20,6 +20,7 @@ import com.lab601.loopicandroid.module.SourceManager
 import kotlinx.android.synthetic.main.activity_netpic_landscape.*
 import java.io.File
 import java.io.IOException
+import kotlin.random.Random
 
 
 class NetPicActivity : BaseActivity() {
@@ -41,9 +42,10 @@ class NetPicActivity : BaseActivity() {
     val WEIGHT_FOCUS = 4.0f
     val WEIGHT_NORMAL = 1.0f
 
-    val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
-    val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
-    val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
+//    val soundPath = "/storage/emulated/0/Loo/sounds"
+    val soundPath = "/sdcard/Loo/sounds"
+    var soundMap = mutableMapOf<String,List<File>>()
+    var soundTag = mutableListOf<String>()
 
     var mediaPlayer: MediaPlayer? = null
     @SuppressLint("ResourceAsColor")
@@ -74,6 +76,8 @@ class NetPicActivity : BaseActivity() {
         initChangeBtn()
         initStoryList()
         initSceneList()
+
+        initSoundList()
     }
 
     fun initText(){
@@ -91,6 +95,9 @@ class NetPicActivity : BaseActivity() {
 
     var storySelect = -1
     fun initStoryList(){
+        val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
+        val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
+        val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
         storyIndexTab.forEachIndexed { index, view ->
             if(ConfigManager.instance.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
             else storyIndexTab[index]?.text = ConfigManager.instance.storyList!![0]
@@ -108,14 +115,17 @@ class NetPicActivity : BaseActivity() {
     }
 
     fun initSceneList(){
+        val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
+        val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
+        val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
         sceneIndexList.forEachIndexed { index, listView ->
             if(ConfigManager.instance.allSceneList!!.size > index){
                 val listItems = ConfigManager.instance.allSceneList!![index]
                 val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, listItems)
                 listView?.adapter = adapter
                 listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                    incAndGetIndex(index, position)
-                    showPage(position, index)
+                    val ser = incAndGetIndex(index, position)
+                    showPage(position, index, ser)
                 }
             }
         }
@@ -228,6 +238,23 @@ class NetPicActivity : BaseActivity() {
         return ser
     }
 
+    fun initSoundList(){
+        val soundRoot = File(soundPath)
+        soundRoot.listFiles().toList().forEachIndexed{ index,item ->
+            soundTag.add(item.name)
+            soundMap[item.name] = item.listFiles().toList()
+        }
+
+        val adapter = ArrayAdapter(this@NetPicActivity, R.layout.scene_list_item, soundTag)
+        soundList?.adapter = adapter
+        soundList?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val tagName = soundTag[position]
+            val soundFileList = soundMap[tagName]
+            val rand = Random.nextInt(0, Int.MAX_VALUE)
+            playSingleSound(soundFileList!![rand % soundFileList.size])
+        }
+    }
+
     /**
      * @param index
      */
@@ -275,6 +302,24 @@ class NetPicActivity : BaseActivity() {
     fun decodeBase64(data: String): String {
         return data
 //        return String(Base64.getDecoder().decode(data.toByteArray()))
+    }
+
+    fun playSingleSound(path:File){
+        try {
+            mediaPlayer = mediaPlayer ?: MediaPlayer()
+            mediaPlayer?.reset()
+            mediaPlayer?.let{
+                it.setDataSource(path.path)
+//                it.setOnCompletionListener { mp: MediaPlayer? ->
+//
+//                }
+                it.prepare()
+                it.start()
+            }
+        } catch (e: IOException) {
+            Log.e("xingkong", "playSound: 播放音频异常", e)
+            e.printStackTrace()
+        }
     }
 
     /**
