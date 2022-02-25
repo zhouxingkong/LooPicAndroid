@@ -23,9 +23,6 @@ import java.util.ArrayList
 
 open class BaseActivity : AppCompatActivity() {
     var urlPic = "http:/192.168.43.139:8080/loopicserver/show/"
-    var urlStoryList = "http:/192.168.43.139:8080/changepic/"
-    var urlSceneList = "http:/192.168.43.139:8080/erasecache"
-    var urlText = "http:/192.168.43.139:8080/rmpic/"
 
     /*-----------申请权限---------------*/
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +36,6 @@ open class BaseActivity : AppCompatActivity() {
 
     fun initIpAddress(){
         urlPic = "http:/" + ConfigManager.instance?.url + ":8080/pic/"
-        urlStoryList = "http:/" + ConfigManager.instance?.url + ":8080/story/list/"
-        urlStoryList = "http:/" + ConfigManager.instance?.url + ":8080/scene/list/"
-        urlSceneList = "http:/" + ConfigManager.instance?.url + ":8080/text/"
     }
 
     @SuppressLint("HandlerLeak")

@@ -32,15 +32,6 @@
             android:layout_height="0dp"
             android:layout_weight="1.0">
 
-            <TextView
-                android:id="@+id/loo_text"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.0"
-                android:background="@color/black"
-                android:text=""
-                android:textSize="23sp" />
-
             <LinearLayout
                 android:id="@+id/story_index_container"
                 android:orientation="vertical"
@@ -174,34 +165,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp" />
-        <LinearLayout
-            android:id="@+id/loo_bottom_container"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/pre_pic"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="@color/black"
-                android:text="◀"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:layout_width="1dp"
-                android:layout_height="match_parent" />
-            <Button
-                android:id="@+id/change_pic"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="@color/black"
-                android:text="▼"
-                android:textColor="@color/white" />
-        </LinearLayout>
 
         <ListView
             android:id="@+id/soundList"

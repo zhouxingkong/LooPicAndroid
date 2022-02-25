@@ -19,6 +19,7 @@ import android.view.View
 import android.widget.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_init.*
 import java.lang.Exception
 import java.lang.NumberFormatException
 import java.net.HttpURLConnection
@@ -26,8 +27,6 @@ import java.net.URL
 import java.util.stream.Collectors
 
 class InitActivity : BaseActivity() {
-    var startButton: Button? = null
-    var startNetPicButton: Button? = null
     var statTextView: TextView? = null
     var landscapeButton: Button? = null
     var soundButton: Button? = null
@@ -81,7 +80,7 @@ class InitActivity : BaseActivity() {
         soundButton = findViewById<View>(R.id.sound_on) as Button
         landscapeButton = findViewById<View>(R.id.landscape_on) as Button
         clearCacheButton = findViewById<View>(R.id.clear_cache) as Button
-        startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
+//        startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
         refreshButton = findViewById<View>(R.id.refresh) as Button
         refreshButton?.setOnClickListener {
             ConfigManager.instance.initNetwork(ipEdit!!.text.toString())
@@ -127,7 +126,6 @@ class InitActivity : BaseActivity() {
                 handler.sendEmptyMessage(WHAT_INIT_FAIL)
             }
         }
-        initClearCache()
 
     }
 
@@ -172,14 +170,6 @@ class InitActivity : BaseActivity() {
     }
 
     fun showSceneList(scene:Int){
-//        @SuppressLint("StaticFieldLeak")
-//        val getSceneTask = object: GetSceneListTask(scene){
-//            override fun showChapterList(data: List<String>) {
-//
-//            }
-//        }
-//        getSceneTask.execute()
-
         ConfigManager.instance.service.getSceneList(scene)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -197,7 +187,6 @@ class InitActivity : BaseActivity() {
                 },{
                     Log.e("xingkong","${it}")
                 })
-
 
         sceneList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             ConfigManager.instance.startScene = position
@@ -217,42 +206,30 @@ class InitActivity : BaseActivity() {
     }
 
     fun initStartBtn(){
-        startNetPicButton!!.setOnClickListener { view: View? ->
-            var ip = ""
-            try {
-                ip = ipEdit!!.text.toString()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-            if (ip.length > 5) {
-//                ConfigManager.instance.url = ip
-                ConfigManager.instance.initNetwork(ip)
-            }
+        start_net_loo_story?.setOnClickListener { view: View? ->
+            setIp()
             val intent = Intent()
-            intent.setClass(this@InitActivity, NetPicActivity::class.java)
+            intent.setClass(this@InitActivity, NetStoryLooActivity::class.java)
+            startActivity(intent)
+        }
+        start_net_loo_menu?.setOnClickListener { view: View? ->
+            setIp()
+            val intent = Intent()
+            intent.setClass(this@InitActivity, NetMenuLooActivity::class.java)
             startActivity(intent)
         }
     }
 
-    fun initClearCache(){
-        clearCacheButton!!.setOnClickListener { v: View? ->    //静音按钮
-            val netThread: Thread = object : Thread() {
-                override fun run() {
-                    try {
-                        val url = URL(urlSceneList)
-                        val connection = url.openConnection() as HttpURLConnection
-                        connection.requestMethod = "POST" //设置请求方式为POST
-                        connection.connect() //连接
-                        val responseCode = connection.responseCode
-                        if (responseCode == 200) {
-                            handler.sendEmptyMessage(BaseActivity.Companion.MESSAGE_CLEAN)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            netThread.start()
+    fun setIp(){
+        var ip = ""
+        try {
+            ip = ipEdit!!.text.toString()
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
+        }
+        if (ip.length > 5) {
+//                ConfigManager.instance.url = ip
+            ConfigManager.instance.initNetwork(ip)
         }
     }
 
