@@ -20,7 +20,8 @@
             android:layout_weight="0.05"
             android:background="@color/black"
             android:text=""
-            android:textSize="23sp" />
+            android:textSize="23sp"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -42,13 +43,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.0">
+                    android:layout_weight="1.0"
+                    android:paddingTop="1dp"
+                    android:background="#40ff0000">
                     <TextView
                         android:id="@+id/story_1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.0"
-                        android:background="#40ff0000"/>
+                        android:layout_weight="1.0" />
 
                     <ListView
                         android:id="@+id/index_list1"
@@ -62,13 +64,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.0">
+                    android:paddingTop="1dp"
+                    android:layout_weight="1.0"
+                    android:background="#4000ff00">
                     <TextView
                         android:id="@+id/story_2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.0"
-                        android:background="#4000ff00"/>
+                        android:layout_weight="1.0" />
 
                     <ListView
                         android:id="@+id/index_list2"
@@ -82,13 +85,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.0">
+                    android:paddingTop="1dp"
+                    android:layout_weight="1.0"
+                    android:background="#400000ff">
                     <TextView
                         android:id="@+id/story_3"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.0"
-                        android:background="#400000ff"/>
+                        android:layout_weight="1.0" />
 
                     <ListView
                         android:id="@+id/index_list3"
@@ -102,13 +106,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.0">
+                    android:paddingTop="1dp"
+                    android:layout_weight="1.0"
+                    android:background="#40ffff00">
                     <TextView
                         android:id="@+id/story_4"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.0"
-                        android:background="#40ffff00"/>
+                        android:layout_weight="1.0" />
 
                     <ListView
                         android:id="@+id/index_list4"
@@ -122,13 +127,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.0">
+                    android:paddingTop="1dp"
+                    android:layout_weight="1.0"
+                    android:background="#4000ffff">
                     <TextView
                         android:id="@+id/story_5"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.0"
-                        android:background="#4000ffff"/>
+                        android:layout_weight="1.0" />
 
                     <ListView
                         android:id="@+id/index_list5"
@@ -142,13 +148,14 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.0">
+                    android:paddingTop="1dp"
+                    android:layout_weight="1.0"
+                    android:background="#40ff00ff">
                     <TextView
                         android:id="@+id/story_6"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.0"
-                        android:background="#40ff00ff"/>
+                        android:layout_weight="1.0" />
 
                     <ListView
                         android:id="@+id/index_list6"
@@ -169,7 +176,7 @@
         <ListView
             android:id="@+id/soundList"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="65dp"
             android:background="@color/black"/>
 
     </LinearLayout>
