@@ -20,32 +20,20 @@ import android.widget.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_init.*
-import java.lang.Exception
 import java.lang.NumberFormatException
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.stream.Collectors
 
 class InitActivity : BaseActivity() {
-    var statTextView: TextView? = null
-    var landscapeButton: Button? = null
-    var soundButton: Button? = null
-    var refreshButton: Button? = null
-    var clearCacheButton: Button? = null
-    var stroyList: ListView? = null
-    var sceneList: ListView? = null
-    var initPosText: TextView? = null
-    var ipEdit: EditText? = null
 
     @SuppressLint("HandlerLeak")
     override var handler: Handler = object : Handler() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 WHAT_INIT_SUCCESS -> {
-                    statTextView!!.text = "初始化成功"
+                    init_stat?.text = "初始化成功"
                 }
                 WHAT_INIT_FAIL -> {
-                    statTextView!!.text = "初始化失败"
+                    init_stat?.text = "初始化失败"
                 }
                 BaseActivity.Companion.MESSAGE_CLEAN -> {
                     doClean()
@@ -71,19 +59,8 @@ class InitActivity : BaseActivity() {
         setContentView(R.layout.activity_init)
         ConfigManager.instance.initNetwork(this.getString(R.string.ip))
 
-        statTextView = findViewById<View>(R.id.init_stat) as TextView
-        stroyList = findViewById<View>(R.id.story_list) as ListView
-        sceneList = findViewById<View>(R.id.scene_list) as ListView
-
-        initPosText = findViewById<View>(R.id.start_index) as TextView
-        ipEdit = findViewById<View>(R.id.server_ip) as EditText
-        soundButton = findViewById<View>(R.id.sound_on) as Button
-        landscapeButton = findViewById<View>(R.id.landscape_on) as Button
-        clearCacheButton = findViewById<View>(R.id.clear_cache) as Button
-//        startNetPicButton = findViewById<View>(R.id.start_net_loo) as Button
-        refreshButton = findViewById<View>(R.id.refresh) as Button
-        refreshButton?.setOnClickListener {
-            ConfigManager.instance.initNetwork(ipEdit!!.text.toString())
+        refresh?.setOnClickListener {
+            ConfigManager.instance.initNetwork(server_ip?.text.toString())
 
             showStoryList()
             showSceneList(ConfigManager.instance.startStory)
@@ -98,22 +75,13 @@ class InitActivity : BaseActivity() {
     fun initView(){
         showStoryList()
         initStartBtn()
-        soundButton!!.setOnClickListener { v: View? ->    //静音按钮
+        sound_on?.setOnClickListener { v: View? ->    //静音按钮
             if (ConfigManager.instance.isSound) {
-                soundButton!!.text = "声音:关闭"
+                sound_on?.text = "声音:关闭"
                 ConfigManager.instance.isSound = false
             } else {
-                soundButton!!.text = "声音:开启"
+                sound_on?.text = "声音:开启"
                 ConfigManager.instance.isSound = true
-            }
-        }
-        landscapeButton!!.setOnClickListener { v: View? ->    //设置横竖屏
-            if (ConfigManager.instance.isLandscape) {
-                landscapeButton!!.text = "竖屏显示"
-                ConfigManager.instance.isLandscape = false
-            } else {
-                landscapeButton!!.text = "横屏显示"
-                ConfigManager.instance.isLandscape = true
             }
         }
 
@@ -155,14 +123,14 @@ class InitActivity : BaseActivity() {
                     val adapter = ArrayAdapter(
                             this@InitActivity, android.R.layout.simple_list_item_1, data
                     )
-                    stroyList!!.adapter = adapter
+                    story_list?.adapter = adapter
                 },{
                     Log.e("xingkong","${it}")
                 })
 
-        stroyList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+        story_list?.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             ConfigManager.instance.startStory = position
-            initPosText!!.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
+            start_index?.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
 
             showSceneList(position)
             initTextData(position)
@@ -183,14 +151,14 @@ class InitActivity : BaseActivity() {
                     val adapter = ArrayAdapter(
                             this@InitActivity, android.R.layout.simple_list_item_1, data
                     )
-                    sceneList!!.adapter = adapter
+                    scene_list?.adapter = adapter
                 },{
                     Log.e("xingkong","${it}")
                 })
 
-        sceneList!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+        scene_list?.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             ConfigManager.instance.startScene = position
-            initPosText!!.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
+            start_index?.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
         }
     }
 
@@ -223,7 +191,7 @@ class InitActivity : BaseActivity() {
     fun setIp(){
         var ip = ""
         try {
-            ip = ipEdit!!.text.toString()
+            ip = server_ip?.text.toString()
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
