@@ -52,16 +52,24 @@ class NetMenuLooActivity : BaseLooActivity() {
     }
 
     var storySelect = -1
+    val storyContainerList = mutableListOf<LinearLayout>()
+    val storyIndexTab = mutableListOf<TextView>()
+    val sceneIndexList = mutableListOf<ListView>()
     fun initStoryList(){
         ConfigManager.allSceneList?:return
-        val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
-        val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
-        storyIndexTab.forEachIndexed { index, view ->
-            if(ConfigManager.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
-            else storyIndexTab[index]?.text = ConfigManager.storyList!![0]
-            storyIndexTab[index]?.setOnClickListener {
+        ConfigManager.allSceneList!!.forEachIndexed { index,item ->
+            val parent = inflater.inflate(R.layout.menu_story_list_item,story_index_container,true) as? ViewGroup ?:return@forEachIndexed
+            val rootView = parent.children.last() as? LinearLayout ?: return@forEachIndexed
+            val storyIndex = rootView.findViewById<TextView>(R.id.storyTitle)
+            val sceneListView = rootView.findViewById<ListView>(R.id.storySceneList)
+            storyIndexTab.add(index,storyIndex)
+            sceneIndexList.add(index,sceneListView)
+            storyContainerList.add(index,rootView)
+
+            storyIndex.text = ConfigManager.storyList!![index]
+            storyIndex.setOnClickListener {
                 storyContainerList.forEachIndexed { i, linearLayout ->
-                    linearLayout?.setLayoutParams(
+                    linearLayout.setLayoutParams(
                         LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             0,
@@ -69,23 +77,48 @@ class NetMenuLooActivity : BaseLooActivity() {
                 }
                 storySelect = if(storySelect==index) -1 else index
             }
+
+            val listItems = ConfigManager.allSceneList!![index]
+            val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, listItems)
+            sceneListView?.adapter = adapter
+            sceneListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                val ser = incAndGetIndex(index, position)
+                showPage(position, index, ser)
+            }
         }
+
+//        val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
+//        val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
+//        storyIndexTab.forEachIndexed { index, view ->
+//            if(ConfigManager.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
+//            else storyIndexTab[index]?.text = ConfigManager.storyList!![index]
+//            storyIndexTab[index]?.setOnClickListener {
+//                storyContainerList.forEachIndexed { i, linearLayout ->
+//                    linearLayout?.setLayoutParams(
+//                        LinearLayout.LayoutParams(
+//                            LinearLayout.LayoutParams.MATCH_PARENT,
+//                            0,
+//                            if(i!=index || storySelect==index) WEIGHT_NORMAL else WEIGHT_FOCUS))
+//                }
+//                storySelect = if(storySelect==index) -1 else index
+//            }
+//        }
     }
 
     fun initSceneList(){
-        ConfigManager.allSceneList?:return
-        val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
-        sceneIndexList.forEachIndexed { index, listView ->
-            if(ConfigManager.allSceneList!!.size > index){
-                val listItems = ConfigManager.allSceneList!![index]
-                val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, listItems)
-                listView?.adapter = adapter
-                listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                    val ser = incAndGetIndex(index, position)
-                    showPage(position, index, ser)
-                }
-            }
-        }
+//        ConfigManager.allSceneList?:return
+//        val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
+//        sceneIndexList.forEachIndexed { index, listView ->
+//            if(ConfigManager.allSceneList!!.size > index){
+//                val listItems = ConfigManager.allSceneList!![index]
+//                val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, listItems)
+//                listView?.adapter = adapter
+//                listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+//                    val ser = incAndGetIndex(index, position)
+//                    showPage(position, index, ser)
+//                }
+//            }
+//        }
     }
 
     fun initRmBtn(){
@@ -101,14 +134,14 @@ class NetMenuLooActivity : BaseLooActivity() {
             soundMap[item.name] = item.listFiles().toList()
         }
 
-        val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, soundTag)
-        soundList?.adapter = adapter
-        soundList?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            val tagName = soundTag[position]
-            val soundFileList = soundMap[tagName]
-            val rand = Random.nextInt(0, Int.MAX_VALUE)
-            playSingleSound(soundFileList!![rand % soundFileList.size])
-        }
+//        val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, soundTag)
+//        soundList?.adapter = adapter
+//        soundList?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+//            val tagName = soundTag[position]
+//            val soundFileList = soundMap[tagName]
+//            val rand = Random.nextInt(0, Int.MAX_VALUE)
+//            playSingleSound(soundFileList!![rand % soundFileList.size])
+//        }
 
         soundRoot.listFiles().toList().forEachIndexed{ index,item ->
             val parent = inflater.inflate(R.layout.menu_sound_list_item,soundContainer,true) as? ViewGroup ?: return@forEachIndexed
@@ -117,6 +150,7 @@ class NetMenuLooActivity : BaseLooActivity() {
             soundText?.setOnClickListener {
                 val tagName = soundTag[index]
                 val soundFileList = soundMap[tagName] ?: return@setOnClickListener
+                if(soundFileList.isEmpty()) return@setOnClickListener
                 val rand = Random.nextInt(0, Int.MAX_VALUE)
                 playSingleSound(soundFileList[rand % soundFileList.size])
             }
