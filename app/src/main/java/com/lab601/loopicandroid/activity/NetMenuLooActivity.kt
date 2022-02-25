@@ -29,6 +29,11 @@ class NetMenuLooActivity : BaseLooActivity() {
 //    val soundPath = "/storage/emulated/0/Loo/sounds"
     lateinit var inflater:LayoutInflater
 
+    var storySelect = -1
+    val storyContainerList = mutableListOf<LinearLayout>()
+    val storyIndexTab = mutableListOf<TextView>()
+    val sceneIndexList = mutableListOf<ListView>()
+
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +49,11 @@ class NetMenuLooActivity : BaseLooActivity() {
     }
 
     fun initView(){
-        initRmBtn()
         initStoryList()
-        initSceneList()
 
         initSoundList()
     }
 
-    var storySelect = -1
-    val storyContainerList = mutableListOf<LinearLayout>()
-    val storyIndexTab = mutableListOf<TextView>()
-    val sceneIndexList = mutableListOf<ListView>()
     fun initStoryList(){
         ConfigManager.allSceneList?:return
         ConfigManager.allSceneList!!.forEachIndexed { index,item ->
@@ -87,44 +86,12 @@ class NetMenuLooActivity : BaseLooActivity() {
             }
         }
 
-//        val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
-//        val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
-//        storyIndexTab.forEachIndexed { index, view ->
-//            if(ConfigManager.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
-//            else storyIndexTab[index]?.text = ConfigManager.storyList!![index]
-//            storyIndexTab[index]?.setOnClickListener {
-//                storyContainerList.forEachIndexed { i, linearLayout ->
-//                    linearLayout?.setLayoutParams(
-//                        LinearLayout.LayoutParams(
-//                            LinearLayout.LayoutParams.MATCH_PARENT,
-//                            0,
-//                            if(i!=index || storySelect==index) WEIGHT_NORMAL else WEIGHT_FOCUS))
-//                }
-//                storySelect = if(storySelect==index) -1 else index
-//            }
-//        }
-    }
-
-    fun initSceneList(){
-//        ConfigManager.allSceneList?:return
-//        val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
-//        sceneIndexList.forEachIndexed { index, listView ->
-//            if(ConfigManager.allSceneList!!.size > index){
-//                val listItems = ConfigManager.allSceneList!![index]
-//                val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, listItems)
-//                listView?.adapter = adapter
-//                listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-//                    val ser = incAndGetIndex(index, position)
-//                    showPage(position, index, ser)
-//                }
-//            }
-//        }
     }
 
     fun initRmBtn(){
-        rm_button?.setOnClickListener { view: View? ->
-            finish()
-        }
+//        rm_button?.setOnClickListener { view: View? ->
+//            finish()
+//        }
     }
 
     fun initSoundList(){
