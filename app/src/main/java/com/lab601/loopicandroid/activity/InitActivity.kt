@@ -10,8 +10,6 @@ import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.utils.EncodeUtil
 import android.widget.AdapterView.OnItemClickListener
 import android.content.Intent
-import com.lab601.loopicandroid.module.SourceManager
-import com.lab601.loopicandroid.module.InitialCallback
 import android.os.Handler
 import android.os.Message
 import android.util.Log
@@ -85,15 +83,15 @@ class InitActivity : BaseActivity() {
             }
         }
 
-        SourceManager.instance.initialCallback = object : InitialCallback {
-            override fun onSuccess() {
-                handler.sendEmptyMessage(WHAT_INIT_SUCCESS)
-            }
-
-            override fun onFail() {
-                handler.sendEmptyMessage(WHAT_INIT_FAIL)
-            }
-        }
+//        SourceManager.initialCallback = object : InitialCallback {
+//            override fun onSuccess() {
+//                handler.sendEmptyMessage(WHAT_INIT_SUCCESS)
+//            }
+//
+//            override fun onFail() {
+//                handler.sendEmptyMessage(WHAT_INIT_FAIL)
+//            }
+//        }
 
     }
 
@@ -209,13 +207,6 @@ class InitActivity : BaseActivity() {
                     override fun granted() {
                         //权限申请通过
                         Log.d("xingkong", "denied:权限通过", null)
-                        val thread: Thread = object : Thread() {
-                            override fun run() {
-                                SourceManager.instance
-                                    .readConfigFile(SourceManager.ROOT_PATH + "/index.txt")
-                            }
-                        }
-                        thread.start()
                     }
 
                     override fun denied(deniedList: List<String?>?) {

@@ -11,7 +11,6 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.ConfigManager
 import com.lab601.loopicandroid.utils.EncodeUtil
-import com.lab601.loopicandroid.module.SourceManager
 import kotlinx.android.synthetic.main.activity_loo_net_story.*
 import kotlinx.android.synthetic.main.activity_loo_net_story.rm_button
 
@@ -89,15 +88,15 @@ class NetStoryLooActivity :BaseLooActivity(){
     }
 
     override fun onPageChanged(index: Int) {
-        if (ConfigManager.isSound) {
-            val displayMenu = SourceManager.instance.displayMenus?.get(index)
-            val soundFiles = displayMenu?.soundList
-            if (soundFiles != null && soundFiles.size > 0) {
-                playSound(soundFiles, 0)
-            } else {
-                mediaPlayer!!.stop()
-            }
-        }
+//        if (ConfigManager.isSound) {
+//            val displayMenu = SourceManager.displayMenus?.get(index)
+//            val soundFiles = displayMenu?.soundList
+//            if (soundFiles != null && soundFiles.size > 0) {
+//                playSound(soundFiles, 0)
+//            } else {
+//                mediaPlayer!!.stop()
+//            }
+//        }
 
         /*显示文本*/
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();

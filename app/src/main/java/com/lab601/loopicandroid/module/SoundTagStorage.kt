@@ -5,6 +5,8 @@ import java.util.*
 import java.util.stream.Collectors
 
 object SoundTagStorage {
+    const val SOUND_ROOT = "/sdcard/bb/sounds"
+
     var soundStorage: MutableMap<String, List<File>> = HashMap()
     fun getSoundFile(tag: String): List<File>? {
         var ret: List<File>? = null
@@ -20,7 +22,7 @@ object SoundTagStorage {
 //        List<File> files = new ArrayList<File>(Arrays.asList(soundFiles));
         var files = getFileList(
             ArrayList(),
-            SourceManager.Companion.SOUND_ROOT + "/" + soundDirStr
+            SOUND_ROOT + "/" + soundDirStr
         ) //改成递归的搜索文件
         files = files.stream().filter { file: File -> !file.isDirectory }
             .collect(Collectors.toList()) //过滤掉文件夹

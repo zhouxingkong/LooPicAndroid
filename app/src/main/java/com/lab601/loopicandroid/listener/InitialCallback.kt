@@ -1,4 +1,4 @@
-package com.lab601.loopicandroid.module
+package com.lab601.loopicandroid.listener
 
 /**
  * 初始化回调
