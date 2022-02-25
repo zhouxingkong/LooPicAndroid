@@ -30,8 +30,6 @@ class NetMenuLooActivity : BaseLooActivity() {
     val WEIGHT_FOCUS = 4.0f
     val WEIGHT_NORMAL = 1.0f
 
-    var currScene = 100
-
 //    val soundPath = "/storage/emulated/0/Loo/sounds"
 
     @SuppressLint("ResourceAsColor")
@@ -44,7 +42,7 @@ class NetMenuLooActivity : BaseLooActivity() {
 
         photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
         fullScreen()
-        showPage(currScene)
+//        showPage(currScene)
     }
 
     fun initView(){
@@ -96,14 +94,6 @@ class NetMenuLooActivity : BaseLooActivity() {
         }
     }
 
-    override fun showCurrPage() {
-        val imagePipeline = Fresco.getImagePipeline()
-        //        imagePipeline.clearCaches();
-        val uri = Uri.parse(urlPic + currScene)
-        imagePipeline.evictFromCache(uri)
-        showPage(currScene)
-    }
-
     fun initSoundList(){
         val soundRoot = File(soundPath)
         soundRoot.listFiles().toList().forEachIndexed{ index,item ->
@@ -125,29 +115,6 @@ class NetMenuLooActivity : BaseLooActivity() {
      * @param index
      */
     override fun onPageChanged(index: Int) {
-        if (ConfigManager.instance.isSound) {
-            val displayMenu = SourceManager.instance.displayMenus?.get(index)
-            val soundFiles = displayMenu?.soundList
-            if (soundFiles != null && soundFiles.size > 0) {
-                playSound(soundFiles, 0)
-            } else {
-                mediaPlayer!!.stop()
-            }
-        }
 
-        /*显示文本*/
-//        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
-        val textList = ConfigManager.instance.text
-        if (textList != null && textList.size > currScene) {
-            var text = EncodeHelper.decodeBase64(textList[currScene])
-            text = text.replace("{", "<font color='#ff0000'>")
-            text = text.replace("}", "</font>")
-            if (text == "#") {
-                text = ""
-            }
-            loo_text?.text = Html.fromHtml(text, 0)
-        } else {
-            loo_text?.text = Html.fromHtml("", 0)
-        }
     }
 }

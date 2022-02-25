@@ -2,9 +2,11 @@ package com.lab601.loopicandroid.activity
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.view.View
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.ConfigManager
@@ -64,6 +66,14 @@ class NetStoryLooActivity :BaseLooActivity(){
                 showPage(currScene)
             }
         }
+    }
+
+    override fun showCurrPage() {
+        val imagePipeline = Fresco.getImagePipeline()
+        //        imagePipeline.clearCaches();
+        val uri = Uri.parse(urlPic + currScene)
+        imagePipeline.evictFromCache(uri)
+        showPage(currScene)
     }
 
     fun initChangeBtn(){
