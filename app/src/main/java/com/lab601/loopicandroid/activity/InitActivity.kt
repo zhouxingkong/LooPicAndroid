@@ -57,14 +57,14 @@ class InitActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_init)
-        ConfigManager.instance.initNetwork(this.getString(R.string.ip))
+        ConfigManager.initNetwork(this.getString(R.string.ip))
 
         refresh?.setOnClickListener {
-            ConfigManager.instance.initNetwork(server_ip?.text.toString())
+            ConfigManager.initNetwork(server_ip?.text.toString())
 
             showStoryList()
-            showSceneList(ConfigManager.instance.startStory)
-            initTextData(ConfigManager.instance.startStory)
+            showSceneList(ConfigManager.startStory)
+            initTextData(ConfigManager.startStory)
         }
 
         initView()
@@ -76,16 +76,16 @@ class InitActivity : BaseActivity() {
         showStoryList()
         initStartBtn()
         sound_on?.setOnClickListener { v: View? ->    //静音按钮
-            if (ConfigManager.instance.isSound) {
+            if (ConfigManager.isSound) {
                 sound_on?.text = "声音:关闭"
-                ConfigManager.instance.isSound = false
+                ConfigManager.isSound = false
             } else {
                 sound_on?.text = "声音:开启"
-                ConfigManager.instance.isSound = true
+                ConfigManager.isSound = true
             }
         }
 
-        SourceManager.instance.initialCallback = object : InitialCallback() {
+        SourceManager.instance.initialCallback = object : InitialCallback {
             override fun onSuccess() {
                 handler.sendEmptyMessage(WHAT_INIT_SUCCESS)
             }
@@ -99,16 +99,16 @@ class InitActivity : BaseActivity() {
 
 
     fun showStoryList(){
-        val data1 = ConfigManager.instance.service.getAllSceneList()
+        val data1 = ConfigManager.service.getAllSceneList()
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .subscribe ({
-                    ConfigManager.instance.allSceneList = it
+                    ConfigManager.allSceneList = it
                 },{
                     Log.e("xingkong","${it}")
                 })
 
-        val data2 = ConfigManager.instance.service.getStoryList()
+        val data2 = ConfigManager.service.getStoryList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe ({
@@ -118,7 +118,7 @@ class InitActivity : BaseActivity() {
                     }.map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
                             .collect(Collectors.toList())
 
-                    ConfigManager.instance.storyList = data
+                    ConfigManager.storyList = data
 
                     val adapter = ArrayAdapter(
                             this@InitActivity, android.R.layout.simple_list_item_1, data
@@ -129,8 +129,8 @@ class InitActivity : BaseActivity() {
                 })
 
         story_list?.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            ConfigManager.instance.startStory = position
-            start_index?.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
+            ConfigManager.startStory = position
+            start_index?.text = "故事:${ConfigManager.startStory};场景${ConfigManager.startScene}"
 
             showSceneList(position)
             initTextData(position)
@@ -138,7 +138,7 @@ class InitActivity : BaseActivity() {
     }
 
     fun showSceneList(scene:Int){
-        ConfigManager.instance.service.getSceneList(scene)
+        ConfigManager.service.getSceneList(scene)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({
@@ -147,7 +147,7 @@ class InitActivity : BaseActivity() {
                     var data = it
                     data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
                             .collect(Collectors.toList())
-                    ConfigManager.instance.currSceneList = data //传入Scene到配置
+                    ConfigManager.currSceneList = data //传入Scene到配置
                     val adapter = ArrayAdapter(
                             this@InitActivity, android.R.layout.simple_list_item_1, data
                     )
@@ -157,17 +157,17 @@ class InitActivity : BaseActivity() {
                 })
 
         scene_list?.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            ConfigManager.instance.startScene = position
-            start_index?.text = "故事:${ConfigManager.instance.startStory};场景${ConfigManager.instance.startScene}"
+            ConfigManager.startScene = position
+            start_index?.text = "故事:${ConfigManager.startStory};场景${ConfigManager.startScene}"
         }
     }
 
     fun initTextData(storyId:Int){
-        ConfigManager.instance.service.getStoryText(storyId)
+        ConfigManager.service.getStoryText(storyId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({
-                ConfigManager.instance.text = it
+                ConfigManager.text = it
             },{
                 Log.e("xingkong","${it}")
             })
@@ -197,7 +197,7 @@ class InitActivity : BaseActivity() {
         }
         if (ip.length > 5) {
 //                ConfigManager.instance.url = ip
-            ConfigManager.instance.initNetwork(ip)
+            ConfigManager.initNetwork(ip)
         }
     }
 

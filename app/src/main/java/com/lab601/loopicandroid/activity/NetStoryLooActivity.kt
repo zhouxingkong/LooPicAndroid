@@ -23,8 +23,8 @@ class NetStoryLooActivity :BaseLooActivity(){
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        currStory = ConfigManager.instance.startStory
-        currScene = ConfigManager.instance.startScene
+        currStory = ConfigManager.startStory
+        currScene = ConfigManager.startScene
 //        val landscape = ConfigManager.instance.isLandscape
 //        if (landscape) {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -89,7 +89,7 @@ class NetStoryLooActivity :BaseLooActivity(){
     }
 
     override fun onPageChanged(index: Int) {
-        if (ConfigManager.instance.isSound) {
+        if (ConfigManager.isSound) {
             val displayMenu = SourceManager.instance.displayMenus?.get(index)
             val soundFiles = displayMenu?.soundList
             if (soundFiles != null && soundFiles.size > 0) {
@@ -101,7 +101,7 @@ class NetStoryLooActivity :BaseLooActivity(){
 
         /*显示文本*/
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
-        val textList = ConfigManager.instance.text
+        val textList = ConfigManager.text
         if (textList != null && textList.size > currScene) {
             var text = EncodeHelper.decodeBase64(textList[currScene])
             text = text.replace("{", "<font color='#ff0000'>")

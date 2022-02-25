@@ -58,8 +58,8 @@ class NetMenuLooActivity : BaseLooActivity() {
         val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
         val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
         storyIndexTab.forEachIndexed { index, view ->
-            if(ConfigManager.instance.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
-            else storyIndexTab[index]?.text = ConfigManager.instance.storyList!![0]
+            if(ConfigManager.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
+            else storyIndexTab[index]?.text = ConfigManager.storyList!![0]
             storyIndexTab[index]?.setOnClickListener {
                 storyContainerList.forEachIndexed { i, linearLayout ->
                     linearLayout?.setLayoutParams(
@@ -76,8 +76,8 @@ class NetMenuLooActivity : BaseLooActivity() {
     fun initSceneList(){
         val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
         sceneIndexList.forEachIndexed { index, listView ->
-            if(ConfigManager.instance.allSceneList!!.size > index){
-                val listItems = ConfigManager.instance.allSceneList!![index]
+            if(ConfigManager.allSceneList!!.size > index){
+                val listItems = ConfigManager.allSceneList!![index]
                 val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, listItems)
                 listView?.adapter = adapter
                 listView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->

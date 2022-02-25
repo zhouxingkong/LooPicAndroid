@@ -35,7 +35,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun initIpAddress(){
-        urlPic = "http:/" + ConfigManager.instance?.url + ":8080/pic/"
+        urlPic = "http:/" + ConfigManager.url + ":8080/pic/"
     }
 
     @SuppressLint("HandlerLeak")

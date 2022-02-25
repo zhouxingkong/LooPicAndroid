@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
-class ConfigManager private constructor() {
+object ConfigManager{
     var isLandscape = true //横屏
     var isSound = false //静音
     var startStory = 0
@@ -21,19 +21,7 @@ class ConfigManager private constructor() {
     var url = ""
     lateinit var service: LooService
 
-
-    companion object {
-        private var mInstance: ConfigManager? = null
-        var preloadMap = HashMap<Int, String>()
-        @JvmStatic
-        val instance: ConfigManager
-            get() {
-                if (mInstance == null) {
-                    mInstance = ConfigManager()
-                }
-                return mInstance!!
-            }
-    }
+    var preloadMap = HashMap<Int, String>()
 
     init {
         text = ArrayList()

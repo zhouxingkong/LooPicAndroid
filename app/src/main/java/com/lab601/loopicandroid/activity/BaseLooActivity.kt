@@ -56,7 +56,7 @@ open class BaseLooActivity: BaseActivity() {
     fun showPage(sceneIndex: Int, storyIndex: Int = -1, serIndex: Int = -1) {
         val serIndex = if(serIndex<0) getSer(sceneIndex) else serIndex
         /*渐进加载图片，然而并没有什么卵用*/
-        val uri = Uri.parse("${urlPic}${if (storyIndex < 0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
+        val uri = Uri.parse("${urlPic}${if (storyIndex < 0) ConfigManager.startStory else storyIndex}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
             .setProgressiveRenderingEnabled(true)
             .build()
