@@ -8,7 +8,7 @@ import java.util.*
 
 
 object ConfigManager{
-    var isLandscape = true //横屏
+    var isFastMenu = false //横屏
     var isSound = false //静音
     var startStory = 0
     var startScene = 0

@@ -54,6 +54,8 @@ class NetMenuLooActivity : BaseLooActivity() {
         initSoundList()
     }
 
+    var lastSelectStory = -1
+    var lastSelectScene = -1
     fun initStoryList(){
         ConfigManager.allSceneList?:return
         ConfigManager.allSceneList!!.forEachIndexed { index,item ->
@@ -81,7 +83,8 @@ class NetMenuLooActivity : BaseLooActivity() {
             val adapter = ArrayAdapter(this@NetMenuLooActivity, R.layout.scene_list_item, listItems)
             sceneListView?.adapter = adapter
             sceneListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                val ser = incAndGetIndex(index, position)
+                val ser = if(ConfigManager.isFastMenu && lastSelectStory == index && lastSelectScene == position) getIndex(index, position)
+                    else incAndGetIndex(index, position)
                 showPage(position, index, ser)
             }
         }

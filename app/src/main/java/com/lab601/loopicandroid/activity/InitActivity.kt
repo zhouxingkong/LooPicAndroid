@@ -93,6 +93,16 @@ class InitActivity : BaseActivity() {
 //            }
 //        }
 
+        landscape_on?.setOnClickListener {
+            if(ConfigManager.isFastMenu){
+                ConfigManager.isFastMenu = false
+                landscape_on?.text = "快切:关闭"
+            }
+            else{
+                ConfigManager.isFastMenu = true
+                landscape_on?.text = "快切:开启"
+            }
+        }
     }
 
 

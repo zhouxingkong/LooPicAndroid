@@ -45,6 +45,17 @@ open class BaseLooActivity: BaseActivity() {
         return incAndGetSer(map, sceneIndex)
     }
 
+    fun getIndex(storyIndex: Int, sceneIndex: Int):Int{
+        if(!indexMap.containsKey(storyIndex)){
+            indexMap.put(storyIndex, mutableMapOf<Int, Int>())
+            return 0
+        }
+        val map = indexMap[storyIndex]!!
+        val ser = if(map.containsKey(sceneIndex)) map[sceneIndex]!!
+        else 0
+        return ser
+    }
+
     fun incAndGetSer(map: MutableMap<Int, Int>, sceneIndex: Int):Int{
         val ser = if(map.containsKey(sceneIndex)) map[sceneIndex]!! + 1
         else 1
