@@ -16,6 +16,7 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.ConfigManager
+import com.lab601.loopicandroid.module.EncodeHelper
 import com.lab601.loopicandroid.module.SourceManager
 import kotlinx.android.synthetic.main.activity_netpic_landscape.*
 import java.io.File
@@ -25,11 +26,10 @@ import kotlin.random.Random
 
 class NetPicActivity : BaseActivity() {
     var MAX_SIZE = 2000000.0
+    val WEIGHT_FOCUS = 4.0f
+    val WEIGHT_NORMAL = 1.0f
+
     var photoView: SimpleDraweeView? = null
-    var textView: TextView? = null
-    var changeButton: Button? = null
-    var preButton: Button? = null
-    var rmButton: Button? = null
     var sceneListUI: ListView? = null
     var showSceneList = false
 
@@ -38,9 +38,6 @@ class NetPicActivity : BaseActivity() {
 
     var serMap = mutableMapOf<Int, Int>()
     var indexMap = mutableMapOf<Int, MutableMap<Int, Int>>()
-
-    val WEIGHT_FOCUS = 4.0f
-    val WEIGHT_NORMAL = 1.0f
 
 //    val soundPath = "/storage/emulated/0/Loo/sounds"
     val soundPath = "/sdcard/Loo/sounds"
@@ -53,14 +50,14 @@ class NetPicActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         currStory = ConfigManager.instance.startStory
         currScene = ConfigManager.instance.startScene
-        val landscape = ConfigManager.instance.isLandscape
-        if (landscape) {
+//        val landscape = ConfigManager.instance.isLandscape
+//        if (landscape) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             setContentView(R.layout.activity_netpic_landscape)
-        } else {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            setContentView(R.layout.activity_main_vertical)
-        }
+//        } else {
+//            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+//            setContentView(R.layout.activity_main_vertical)
+//        }
 
         initView()
 
@@ -81,23 +78,21 @@ class NetPicActivity : BaseActivity() {
     }
 
     fun initText(){
-        /*初始化view*/textView = findViewById<View>(R.id.loo_text) as TextView
         /*设置文本字体*/
 //        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/loo_font1.ttf");  // mContext为上下文
 //        Typeface typeface = Typeface.createFromAsset(this.getAssets(), "fonts/HanyiSentyCrayon.ttf");  // mContext为上下文
 //        textView.setTypeface(typeface);
-        textView!!.setOnClickListener { view: View? ->  //下一张图
+        loo_text?.setOnClickListener { view: View? ->  //下一张图
             currScene++
             showPage(currScene)
         }
-        if(showSceneList) textView?.visibility = View.GONE
+        if(showSceneList) loo_text?.visibility = View.GONE
     }
 
     var storySelect = -1
     fun initStoryList(){
         val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
         val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
-        val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
         storyIndexTab.forEachIndexed { index, view ->
             if(ConfigManager.instance.allSceneList!!.size < index+1) storyContainerList[index]?.visibility = View.GONE
             else storyIndexTab[index]?.text = ConfigManager.instance.storyList!![0]
@@ -115,8 +110,6 @@ class NetPicActivity : BaseActivity() {
     }
 
     fun initSceneList(){
-        val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
-        val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
         val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
         sceneIndexList.forEachIndexed { index, listView ->
             if(ConfigManager.instance.allSceneList!!.size > index){
@@ -132,26 +125,11 @@ class NetPicActivity : BaseActivity() {
 
         if(!showSceneList) {
             story_index_container?.visibility = View.GONE
-            sceneListUI?.visibility = View.GONE
         }
-    }
-
-    fun doShowSceneList(storyIndex: Int){
-        val l = ConfigManager.instance.allSceneList!![storyIndex]
-        val adapter = ArrayAdapter(
-                this@NetPicActivity, R.layout.scene_list_item, l
-        )
-        sceneListUI!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-//            incAndGetSer(serMap,position)
-            val ser = incAndGetIndex(currStory, position)
-            showPage(position, currStory, ser)
-        }
-        sceneListUI!!.adapter = adapter
     }
 
     fun initPreBtn(){
-        preButton = findViewById<View>(R.id.pre_pic) as Button
-        preButton!!.setOnClickListener { view: View? ->    //上一张图
+        pre_pic?.setOnClickListener { view: View? ->    //上一张图
             if (currScene > 0) {
                 currScene--
                 showPage(currScene)
@@ -160,26 +138,22 @@ class NetPicActivity : BaseActivity() {
     }
 
     fun initChangeBtn(){
-        changeButton = findViewById<View>(R.id.change_pic) as Button
-        changeButton!!.setOnClickListener { view: View? ->
+        change_pic?.setOnClickListener { view: View? ->
             incAndGetSer(serMap, currScene)
             showPage(currScene)
         }
     }
     fun initRmBtn(){
-        rmButton = findViewById<View>(R.id.rm_button) as Button
-        rmButton!!.setOnClickListener { view: View? ->
+        rm_button?.setOnClickListener { view: View? ->
             if(showSceneList){
-                sceneListUI?.visibility = View.GONE
-                textView?.visibility = View.VISIBLE
+                loo_text?.visibility = View.VISIBLE
                 loo_bottom_container?.visibility = View.VISIBLE
                 story_index_container?.visibility = View.GONE
                 showSceneList = false
             }
             else{
-                sceneListUI?.visibility = View.VISIBLE
                 story_index_container?.visibility = View.VISIBLE
-                textView?.visibility = View.GONE
+                loo_text?.visibility = View.GONE
                 loo_bottom_container?.visibility = View.GONE
                 showSceneList = true
             }
@@ -195,11 +169,9 @@ class NetPicActivity : BaseActivity() {
     }
 
     fun showPage(sceneIndex: Int, storyIndex: Int = -1, serIndex: Int = -1) {
-
         val serIndex = if(serIndex<0) getSer(sceneIndex) else serIndex
         /*渐进加载图片，然而并没有什么卵用*/
         val uri = Uri.parse("${urlPic}${if (storyIndex < 0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
-//        Log.d("xingkong", "uri=${urlPic}${if (storyIndex < 0) ConfigManager.instance.startStory else storyIndex}/${sceneIndex}/${serIndex}")
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
             .setProgressiveRenderingEnabled(true)
             .build()
@@ -273,36 +245,19 @@ class NetPicActivity : BaseActivity() {
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
         val textList = ConfigManager.instance.text
         if (textList != null && textList.size > currScene) {
-            var text = decodeBase64(textList[currScene])
+            var text = EncodeHelper.decodeBase64(textList[currScene])
             text = text.replace("{", "<font color='#ff0000'>")
             text = text.replace("}", "</font>")
             if (text == "#") {
                 text = ""
             }
-            textView!!.text = Html.fromHtml(text, 0)
+            loo_text?.text = Html.fromHtml(text, 0)
         } else {
-            textView!!.text = Html.fromHtml("", 0)
+            loo_text?.text = Html.fromHtml("", 0)
         }
     }
 
-    /**
-     * 客户端解密
-     *
-     * @param in
-     * @return
-     */
-//    fun decode(`in`: String): String {
-//        val byteArray = `in`.toByteArray()
-//        for (i in byteArray.indices) {
-//            (byteArray[i] -= 1).toByte()
-//        }
-//        return String(byteArray)
-//    }
-
-    fun decodeBase64(data: String): String {
-        return data
-//        return String(Base64.getDecoder().decode(data.toByteArray()))
-    }
+    /*-----------音频播放------*/
 
     fun playSingleSound(path:File){
         try {
@@ -310,9 +265,6 @@ class NetPicActivity : BaseActivity() {
             mediaPlayer?.reset()
             mediaPlayer?.let{
                 it.setDataSource(path.path)
-//                it.setOnCompletionListener { mp: MediaPlayer? ->
-//
-//                }
                 it.prepare()
                 it.start()
             }
@@ -334,17 +286,17 @@ class NetPicActivity : BaseActivity() {
             return
         }
         try {
-            mediaPlayer!!.stop()
-            mediaPlayer = MediaPlayer()
-            mediaPlayer!!.setDataSource(path[index].path)
+            mediaPlayer = mediaPlayer ?: MediaPlayer()
+            mediaPlayer?.reset()
+            mediaPlayer?.setDataSource(path[index].path)
             if (path.size > index + 1) {
                 /*播放完成回调函数*/
-                mediaPlayer!!.setOnCompletionListener { mp: MediaPlayer? ->
+                mediaPlayer?.setOnCompletionListener { mp: MediaPlayer? ->
                     playSound(path, index + 1)
                 }
             }
-            mediaPlayer!!.prepare()
-            mediaPlayer!!.start()
+            mediaPlayer?.prepare()
+            mediaPlayer?.start()
         } catch (e: IOException) {
             Log.e("xingkong", "playSound: 播放音频异常", e)
             e.printStackTrace()
