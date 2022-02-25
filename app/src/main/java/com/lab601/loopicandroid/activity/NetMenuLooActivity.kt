@@ -30,9 +30,6 @@ class NetMenuLooActivity : BaseLooActivity() {
     val WEIGHT_FOCUS = 4.0f
     val WEIGHT_NORMAL = 1.0f
 
-    var showSceneList = false
-
-    var currStory = 0
     var currScene = 100
 
 //    val soundPath = "/storage/emulated/0/Loo/sounds"
@@ -90,10 +87,6 @@ class NetMenuLooActivity : BaseLooActivity() {
                     showPage(position, index, ser)
                 }
             }
-        }
-
-        if(!showSceneList) {
-            story_index_container?.visibility = View.GONE
         }
     }
 
