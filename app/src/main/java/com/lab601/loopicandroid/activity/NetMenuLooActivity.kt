@@ -3,9 +3,12 @@ package com.lab601.loopicandroid.activity
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import android.widget.LinearLayout
+import androidx.core.view.children
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.ConfigManager
@@ -24,6 +27,7 @@ class NetMenuLooActivity : BaseLooActivity() {
     val WEIGHT_NORMAL = 1.0f
 
 //    val soundPath = "/storage/emulated/0/Loo/sounds"
+    lateinit var inflater:LayoutInflater
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +35,7 @@ class NetMenuLooActivity : BaseLooActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         setContentView(R.layout.activity_loo_net_menu)
 
+        inflater = LayoutInflater.from(this)
         initView()
 
         photoView = findViewById<View>(R.id.photo_view) as SimpleDraweeView
@@ -48,6 +53,7 @@ class NetMenuLooActivity : BaseLooActivity() {
 
     var storySelect = -1
     fun initStoryList(){
+        ConfigManager.allSceneList?:return
         val storyContainerList = listOf(storyContainer1,storyContainer2,storyContainer3,storyContainer4,storyContainer5,storyContainer6)
         val storyIndexTab = listOf(story_1,story_2,story_3,story_4,story_5,story_6)
         storyIndexTab.forEachIndexed { index, view ->
@@ -67,6 +73,7 @@ class NetMenuLooActivity : BaseLooActivity() {
     }
 
     fun initSceneList(){
+        ConfigManager.allSceneList?:return
         val sceneIndexList = listOf(index_list1,index_list2,index_list3,index_list4,index_list5,index_list6)
         sceneIndexList.forEachIndexed { index, listView ->
             if(ConfigManager.allSceneList!!.size > index){
@@ -101,6 +108,18 @@ class NetMenuLooActivity : BaseLooActivity() {
             val soundFileList = soundMap[tagName]
             val rand = Random.nextInt(0, Int.MAX_VALUE)
             playSingleSound(soundFileList!![rand % soundFileList.size])
+        }
+
+        soundRoot.listFiles().toList().forEachIndexed{ index,item ->
+            val parent = inflater.inflate(R.layout.menu_sound_list_item,soundContainer,true) as? ViewGroup ?: return@forEachIndexed
+            val soundText = parent.children.last() as? TextView
+            soundText?.text = item.name
+            soundText?.setOnClickListener {
+                val tagName = soundTag[index]
+                val soundFileList = soundMap[tagName] ?: return@setOnClickListener
+                val rand = Random.nextInt(0, Int.MAX_VALUE)
+                playSingleSound(soundFileList[rand % soundFileList.size])
+            }
         }
     }
 
