@@ -7,7 +7,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import android.os.Build
 import com.lab601.loopicandroid.listener.PermissionListener
 import com.lab601.loopicandroid.R
-import com.lab601.loopicandroid.module.EncodeHelper
+import com.lab601.loopicandroid.utils.EncodeUtil
 import android.widget.AdapterView.OnItemClickListener
 import android.content.Intent
 import com.lab601.loopicandroid.module.SourceManager
@@ -115,7 +115,7 @@ class InitActivity : BaseActivity() {
                     var data = it
                     data = data.stream().map {
                         it.substring(it.lastIndexOf("\\")+1,it.indexOf("."))
-                    }.map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
+                    }.map { s: String? -> EncodeUtil.decodeBase64(s?:"") }
                             .collect(Collectors.toList())
 
                     ConfigManager.storyList = data
@@ -145,7 +145,7 @@ class InitActivity : BaseActivity() {
                     Log.d("xingkong","scene=${it}")
 
                     var data = it
-                    data = data.stream().map { s: String? -> EncodeHelper.decodeBase64(s?:"") }
+                    data = data.stream().map { s: String? -> EncodeUtil.decodeBase64(s?:"") }
                             .collect(Collectors.toList())
                     ConfigManager.currSceneList = data //传入Scene到配置
                     val adapter = ArrayAdapter(

@@ -1,8 +1,8 @@
-package com.lab601.loopicandroid.module
+package com.lab601.loopicandroid.utils
 
 import java.util.*
 
-object EncodeHelper {
+object EncodeUtil {
     fun decodeBase64(data: String): String {
         return data
 //        return String(Base64.getDecoder().decode(data.toByteArray()))

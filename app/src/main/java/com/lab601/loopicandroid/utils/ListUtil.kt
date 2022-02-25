@@ -1,8 +1,8 @@
-package com.lab601.loopicandroid
+package com.lab601.loopicandroid.utils
 
 import java.util.*
 
-object Utils {
+object ListUtil {
     // 打乱列表实现方法2
     fun <T> shuffle(list: List<T?>) {
         val size = list.size

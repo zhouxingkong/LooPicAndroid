@@ -10,7 +10,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.ConfigManager
-import com.lab601.loopicandroid.module.EncodeHelper
+import com.lab601.loopicandroid.utils.EncodeUtil
 import com.lab601.loopicandroid.module.SourceManager
 import kotlinx.android.synthetic.main.activity_loo_net_story.*
 import kotlinx.android.synthetic.main.activity_loo_net_story.rm_button
@@ -103,7 +103,7 @@ class NetStoryLooActivity :BaseLooActivity(){
 //        String text = SourceManager.getInstance().getDisplayMenus().get(index).getText();
         val textList = ConfigManager.text
         if (textList != null && textList.size > currScene) {
-            var text = EncodeHelper.decodeBase64(textList[currScene])
+            var text = EncodeUtil.decodeBase64(textList[currScene])
             text = text.replace("{", "<font color='#ff0000'>")
             text = text.replace("}", "</font>")
             if (text == "#") {

@@ -2,20 +2,13 @@ package com.lab601.loopicandroid.activity
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.view.View
 import android.widget.*
 import android.widget.LinearLayout
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.lab601.loopicandroid.R
 import com.lab601.loopicandroid.module.ConfigManager
-import com.lab601.loopicandroid.module.EncodeHelper
-import com.lab601.loopicandroid.module.SourceManager
 import kotlinx.android.synthetic.main.activity_loo_net_menu.*
 import kotlinx.android.synthetic.main.activity_loo_net_menu.rm_button
 import kotlinx.android.synthetic.main.activity_loo_net_story.*
