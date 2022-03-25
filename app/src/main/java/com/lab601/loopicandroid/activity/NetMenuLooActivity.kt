@@ -30,6 +30,7 @@ class NetMenuLooActivity : BaseLooActivity() {
     lateinit var inflater:LayoutInflater
 
     var storySelect = -1
+    val storyCheckList = mutableListOf<Boolean>()
     val storyContainerList = mutableListOf<LinearLayout>()
     val storyIndexTab = mutableListOf<TextView>()
     val sceneIndexList = mutableListOf<ListView>()
@@ -59,6 +60,24 @@ class NetMenuLooActivity : BaseLooActivity() {
     fun initStoryList(){
         ConfigManager.allSceneList?:return
         ConfigManager.allSceneList!!.forEachIndexed { index,item ->
+            /*tab初始化*/
+            storyCheckList.add(false)
+            val tabParent = inflater.inflate(R.layout.story_tab_item,story_tab_container,true) as? ViewGroup ?:return@forEachIndexed
+            val tabTitle = tabParent.children.last() as? TextView ?: return@forEachIndexed
+            tabTitle.text = ConfigManager.storyList!![index]
+            tabTitle.setOnClickListener {
+                if(storyCheckList[index]){
+                    storyCheckList[index] = false
+                    tabTitle.setTextColor(resources.getColor(R.color.white))
+                    storyContainerList[index].visibility = View.GONE
+                }else{
+                    storyCheckList[index] = true
+                    tabTitle.setTextColor(resources.getColor(R.color.colorAccent))
+                    storyContainerList[index].visibility = View.VISIBLE
+                }
+            }
+
+            /*故事列表初始化*/
             val parent = inflater.inflate(R.layout.menu_story_list_item,story_index_container,true) as? ViewGroup ?:return@forEachIndexed
             val rootView = parent.children.last() as? LinearLayout ?: return@forEachIndexed
             val storyIndex = rootView.findViewById<TextView>(R.id.storyTitle)
@@ -87,6 +106,8 @@ class NetMenuLooActivity : BaseLooActivity() {
                     else incAndGetIndex(index, position)
                 showPage(position, index, ser)
             }
+
+            rootView.visibility = View.GONE
         }
 
     }

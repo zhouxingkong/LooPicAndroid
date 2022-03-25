@@ -19,7 +19,7 @@ open class BaseLooActivity: BaseActivity() {
 
     var mediaPlayer: MediaPlayer? = null
 
-    val soundPath = "/sdcard/Loo/sounds"
+    val soundPath = "/storage/emulated/0/Loo/sounds"
     var soundMap = mutableMapOf<String,List<File>>()
     var soundTag = mutableListOf<String>()
 
